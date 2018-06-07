@@ -42,10 +42,11 @@ var FrameNotification =
         {
             if (notification.NotificationType == "FrameNotificationAddProperty")
             {
-                if (new_class.monitored_properties[notification.variable] != nil and 
-                    new_class.monitored_properties[notification.variable].getPath() != notification.property)
+                if (new_class.monitored_properties[notification.variable] != nil 
+                    and new_class.monitored_properties[notification.variable].getPath() != notification.property
+                    and new_class.monitored_properties[notification.variable].getPath() != "/"~notification.property)
                   print("[WARNING]: FrameNotification: already have variable ",notification.variable,"=",new_class.monitored_properties[notification.variable].getPath(), " using different property ",notification.property);
-                else
+                else if (new_class.monitored_properties[notification.variable] == nil)
                   print("[INFO]: FrameNotification.",notification.variable, " = ",notification.property);
 
                 new_class.monitored_properties[notification.variable] = props.globals.getNode(notification.property,1);
@@ -83,7 +84,6 @@ var FrameNotificationAddProperty =
     },
 };
 #    
-emesary.GlobalTransmitter.DeleteAllRecipients();
 var frameNotification = FrameNotification.new(1);
 emesary.GlobalTransmitter.Register(frameNotification.Recipient);
 
