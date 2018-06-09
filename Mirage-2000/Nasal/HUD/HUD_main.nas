@@ -116,7 +116,7 @@ var M2000_HUD = {
                                           obj.ladder.setTranslation (0.0, hdp.pitch * pitch_factor+pitch_offset);                                           
                                           obj.ladder.setCenter (118,830 - hdp.pitch * pitch_factor-pitch_offset);
                                           obj.ladder.setRotation (-hdp.roll_rad);
-                                          obj.roll_pointer.setRotation (hdp.roll_rad);
+                                          obj.roll_pointer.setRotation (-hdp.roll_rad);
                                       }),
 #            props.UpdateManager.FromHashValue("roll_rad", 1.0, func(roll_rad)
 #                                      {
