@@ -685,14 +685,21 @@
 			<output>fbw/pitch/pid</output>
 		</pid>
 		
-		<pure_gain name="fbw/pitch/p-g">
-			<input>fbw/pitch/error</input>
-			<gain>fbw/pitch/p-gain</gain>
+		<fcs_function name="fbw/pitch/p-g">
+			<function>
+				<sum>
+					<product>
+						<property>fbw/pitch/error</property>
+						<property>fbw/pitch/p-gain</property>
+					</product>
+					<value>0.15</value>
+				</sum>
+			</function>
 			<clipto>
 				<min>-1.0</min>
 				<max>1.0</max>
 			</clipto>
-		</pure_gain>
+		</fcs_function>
 		
 		<switch name="fbw/pitch-output">
 			<default value="fbw/pitch/pid"/>
@@ -700,21 +707,6 @@
 				fbw/gain-switch gt 0
 			</test>
 		</switch>
-		
-		<fcs_function name="fbw/pitch-output-offset">
-			<function>
-				<sum>
-					<property>fbw/pitch-output</property>
-					<table>
-						<independentVar lookup="row">velocities/mach</independentVar>
-						<tableData>
-							0.3  0.15
-							0.7  0.03
-						</tableData>
-					</table>
-				</sum>
-			</function>
-		</fcs_function>
 	
 	</channel>
 	
@@ -948,7 +940,7 @@
 		</switch>
 		
 		<switch name="fcs/pitch-input">
-			<default value="fbw/pitch-output-offset"/>
+			<default value="fbw/pitch-output"/>
 			<test value="fcs/elevator-sum">
 				fbw/enable eq 0
 			</test>
