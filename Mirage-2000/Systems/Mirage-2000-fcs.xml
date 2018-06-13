@@ -122,10 +122,9 @@
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0      1      2
-						0.2  0.410  0.140  0.000
-						0.3  0.370  0.130  0.000
-						0.7  0.250  0.100  0.000
-						1.0  0.230  0.075  0.000
+						0.2  0.480  0.140  0.000
+						0.5  0.400  0.100  0.000
+						1.0  0.210  0.075  0.000
 						1.5  0.110  0.050  0.000
 						2.5  0.055  0.050  0.000
 					</tableData>
@@ -140,12 +139,11 @@
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0    1
-						0.2  8.5  0.0
-						0.3  7.1  0.0
-						0.7  3.3  0.0
-						1.0  3.1  0.0
-						1.5  2.8  0.0
-						2.5  2.3  0.0
+						0.2  6.5  0.0
+						0.5  5.0  0.0
+						1.0  4.0  0.0
+						1.5  3.3  0.0
+						2.5  2.8  0.0
 					</tableData>
 				</table>
 			</function>
@@ -158,9 +156,8 @@
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0       1
-						0.2  0.0014  0.0000
-						0.3  0.0012  0.0000
-						0.7  0.0009  0.0000
+						0.2  0.0010  0.0000
+						0.5  0.0009  0.0000
 						1.0  0.0005  0.0000
 						1.5  0.0004  0.0000
 						2.5  0.0002  0.0000
@@ -619,6 +616,16 @@
 					<value>1</value>
 				</difference>
 			</function>
+		</fcs_function>
+		
+		<fcs_function name="fbw/pitch/a_n-norm">
+			<function>
+				<sum>
+					<property>fbw/pitch/a_n</property>
+					<value>1</value>
+				</sum>
+			</function>
+			<output>/instrumentation/g-meter/instrumented-g</output>
 		</fcs_function>
 		
 		<switch name="fbw/pitch/a_n_IaN">
