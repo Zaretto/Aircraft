@@ -23,6 +23,7 @@
 	<property value="0">fbw/man-slat</property>
 	<property value="0">fbw/roll/pid</property>
 	<property value="0">fbw/pitch/pid</property>
+	<property value="0">fbw/yaw/beta-pid</property>
 	<property value="0">fbw/pitch/a_n_IaN</property>
 	<property value="0">fbw/pitch/rotate-mode</property>
 	
@@ -41,6 +42,8 @@
 	<property value="0">fbw/pitch/d-gain</property>
 	<property value="0">fbw/yaw/yd-p-gain</property>
 	<property value="0">fbw/yaw/beta-p-gain</property>
+	<property value="0">fbw/yaw/beta-i-gain</property>
+	<property value="0">fbw/yaw/beta-d-gain</property>
 	
 	<channel name="Libraries">
 		
@@ -189,11 +192,42 @@
 					<independentVar lookup="row">velocities/mach</independentVar>
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
+						     0     1
+						0.5  12.0  0.0
+						1.0   3.5  0.0
+						1.5   2.2  0.0
+						2.5   1.5  0.0
+					</tableData>
+				</table>
+			</function>
+		</fcs_function>
+
+		<fcs_function name="fbw/yaw/beta-i-gain">
+			<function>
+				<table>
+					<independentVar lookup="row">velocities/mach</independentVar>
+					<independentVar lookup="column">fbw/gain-switch</independentVar>
+					<tableData>
+						     0     1
+						0.5  0.15  0.00
+						1.0  0.12  0.00
+						1.5  0.10  0.00
+						2.5  0.07  0.00
+					</tableData>
+				</table>
+			</function>
+		</fcs_function>
+		
+		<fcs_function name="fbw/yaw/beta-d-gain">
+			<function>
+				<table>
+					<independentVar lookup="row">velocities/mach</independentVar>
+					<independentVar lookup="column">fbw/gain-switch</independentVar>
+					<tableData>
 						     0    1
-						0.3  4.5  0.0
-						0.7  2.5  0.0
+						0.5  7.0  0.0
 						1.0  2.0  0.0
-						1.5  1.5  0.0
+						1.5  1.7  0.0
 						2.5  1.0  0.0
 					</tableData>
 				</table>
@@ -259,7 +293,7 @@
 		
 		<lag_filter name="fbw/roll/rate-stick-lag">
 			<input>fbw/roll/rate-stick</input>
-			<c1>9.6</c1>
+			<c1>13.6</c1>
 		</lag_filter>
 		
 		<switch name="fbw/roll/rad-hold">
@@ -457,9 +491,9 @@
 				<table>
 					<independentVar lookup="row">fbw/pitch/alpha-lag</independentVar>
 					<tableData>
-						20  0.0
-						26  0.5
-						29  1.0
+						17  0.0
+						19  0.5
+						21  1.0
 					</tableData>
 				</table>
 			</function>
@@ -470,9 +504,9 @@
 				<table>
 					<independentVar lookup="row">fbw/pitch/alpha-lag</independentVar>
 					<tableData>
-						18 -1.00
-						20 -0.85
-						28  0.00
+						13 -1.00
+						16 -0.85
+						20  0.00
 					</tableData>
 				</table>
 			</function>
@@ -618,16 +652,6 @@
 			</function>
 		</fcs_function>
 		
-		<fcs_function name="fbw/pitch/a_n-norm">
-			<function>
-				<sum>
-					<property>fbw/pitch/a_n</property>
-					<value>1</value>
-				</sum>
-			</function>
-			<output>/instrumentation/g-meter/instrumented-g</output>
-		</fcs_function>
-		
 		<switch name="fbw/pitch/a_n_IaN">
 			<default value="0"/>
 			<test logic="AND" value="fbw/pitch/a_n">
@@ -636,6 +660,16 @@
 				position/wow ne 1
 			</test>
 		</switch>
+		
+		<fcs_function name="fbw/pitch/a_n-norm">
+			<function>
+				<sum>
+					<property>fbw/pitch/a_n_IaN</property>
+					<value>1</value>
+				</sum>
+			</function>
+			<output>/instrumentation/g-meter/instrumented-g</output>
+		</fcs_function>
 		
 		<pure_gain name="velocities/q-deg_sec">
 			<input>velocities/q-rad_sec</input>
@@ -779,8 +813,8 @@
 					<independentVar lookup="column">attitude/roll-rad</independentVar>
 					<tableData>
 						   -0.174533  0.000000
-						22  1.0       1.0
-						26  0.0       1.0
+						12  1.0       1.0
+						18  0.0       1.0
 					</tableData>
 				</table>
 			</function>
@@ -863,31 +897,50 @@
 			<input>velocities/r-rad_sec</input>
 			<gain>fbw/yaw/yd-p-gain</gain>
 			<clipto>
-				<min>-0.1</min>
-				<max>0.1</max>
+				<min>-0.3</min>
+				<max>0.3</max>
 			</clipto>
 		</pure_gain>
 		
 		<pure_gain name="fbw/yaw/beta-p-gain-g">
 			<input>fbw/yaw/beta-p-gain</input>
-			<gain>0.1</gain>
+			<gain>0.2</gain>
 		</pure_gain>
 		
 		<switch name="fbw/yaw/beta-p-gain-s">
 			<default value="fbw/yaw/beta-p-gain"/>
-			<test logic="OR" value="fbw/yaw/beta-p-gain-g">
+			<test value="fbw/yaw/beta-p-gain-g">
 				fbw/yaw/rudder-nul ne 0
 			</test>
 		</switch>
 		
-		<pure_gain name="fbw/yaw/beta-f">
+		<switch name="fbw/yaw/beta-trigger">
+			<default value="0"/>
+			<test logic="OR" value="1">
+				fbw/yaw/rudder-nul ne 0
+				fbw/gain-switch gt 0
+			</test>
+		</switch>
+		
+		<pid name="fbw/yaw/beta-pid-v">
 			<input>aero/beta-rad</input>
-			<gain>fbw/yaw/beta-p-gain-s</gain>
+			<kp>fbw/yaw/beta-p-gain-s</kp>
+			<ki>fbw/yaw/beta-i-gain</ki>
+			<kd>fbw/yaw/beta-d-gain</kd>
+			<trigger>fbw/yaw/beta-trigger</trigger>
 			<clipto>
-				<min>-0.15</min>
-				<max>0.15</max>
+				<min>-0.3</min>
+				<max>0.3</max>
 			</clipto>
-		</pure_gain>
+			<output>fbw/yaw/beta-pid</output>
+		</pid>
+		
+		<switch name="fbw/yaw/beta-f">
+			<default value="fbw/yaw/beta-pid"/>
+			<test logic="OR" value="0">
+				fbw/yaw/rudder-nul ne 0
+			</test>
+		</switch>
 		
 		<summer name="fbw/yaw-output">
 			<input>fbw/yaw/cmd</input>
