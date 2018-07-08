@@ -123,7 +123,7 @@
 				<table>
 					<independentVar lookup="row">velocities/mach</independentVar>
 					<tableData>
-						0.2  22.4
+						0.2  32.1
 						0.5  12.7
 						1.0   2.3
 						1.5   0.9
@@ -141,10 +141,10 @@
 					<tableData>
 						     0     1
 						0.2 -0.15  0.00
-						0.5 -0.09  0.00
-						1.0 -0.06  0.00
-						1.5 -0.05  0.00
-						2.5 -0.04  0.00
+						0.5 -0.10  0.00
+						1.0 -0.07  0.00
+						1.5 -0.04  0.00
+						2.5 -0.03  0.00
 					</tableData>
 				</table>
 			</function>
@@ -156,12 +156,12 @@
 					<independentVar lookup="row">velocities/mach</independentVar>
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
-						     0     1
-						0.2 -0.16  0.00
-						0.5 -0.08  0.00
-						1.0 -0.07  0.00
-						1.5 -0.06  0.00
-						2.5 -0.05  0.00
+						     0      1
+						0.2 -0.080  0.000
+						0.5 -0.075  0.000
+						1.0 -0.073  0.000
+						1.5 -0.071  0.000
+						2.5 -0.051  0.000
 					</tableData>
 				</table>
 			</function>
@@ -191,6 +191,7 @@
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0     1
+						0.2  16.0  0.0
 						0.5  12.0  0.0
 						1.0   3.5  0.0
 						1.5   2.2  0.0
@@ -207,6 +208,7 @@
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0     1
+						0.2  0.14  0.00
 						0.5  0.15  0.00
 						1.0  0.12  0.00
 						1.5  0.10  0.00
@@ -223,6 +225,7 @@
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0    1
+						0.2  9.0  0.0
 						0.5  7.0  0.0
 						1.0  2.0  0.0
 						1.5  1.7  0.0
@@ -552,15 +555,15 @@
 		</summer>
 		
 		<switch name="fbw/pitch/g-max">
-			<default value="9.5"/>
-			<test logic="AND" value="6.5">
+			<default value="10.5"/>
+			<test logic="AND" value="7.5">
 				fbw/mode eq 1
 			</test>
 		</switch>
 		
 		<switch name="fbw/pitch/thetadot-gain">
-			<default value="-40"/>
-			<test logic="OR" value="40">
+			<default value="-35"/>
+			<test logic="OR" value="35">
 				attitude/roll-rad lt -1.5708
 				attitude/roll-rad gt 1.5708
 			</test>
@@ -571,8 +574,8 @@
 			<table>
 				<independentVar lookup="row">velocities/mach</independentVar>
 				<tableData>
-					0.3  0.5
-					0.6  1.0
+					0.2  0.7
+					0.5  1.0
 				</tableData>
 			</table>
 			<gain>fbw/pitch/thetadot-gain</gain>
@@ -590,11 +593,11 @@
 						<independentVar lookup="column">fbw/mode</independentVar>
 						<tableData>
 							        0    1
-							-1.000  9.5  6.5 <!-- Equals 10.5/7.5 G -->
-							-0.900  7.5  4.5 <!-- A slight null zone for the elastic stop -->
-							-0.850  7.5  4.5 <!-- Equals 8.5/5.5 G -->
-							 0.000  0.0  0.0
-							 1.000 -4.5 -4.5 <!-- Equals -3.5 G -->
+							-1.000 10.5  7.5
+							-0.900  8.5  5.5 <!-- A slight null zone for the elastic stop -->
+							-0.850  8.5  5.5
+							 0.000  1.0  0.0
+							 1.000 -3.5 -3.5
 						</tableData>
 					</table>
 					<product>
@@ -605,7 +608,7 @@
 				</sum>
 			</function>
 			<clipto>
-				<min>-4.5</min>
+				<min>-3.5</min>
 				<max>fbw/pitch/g-max</max>
 			</clipto>
 		</fcs_function>
@@ -622,64 +625,16 @@
 			</test>
 		</switch>
 		
-		<fcs_function name="fbw/pitch/a_n">
-			<function>
-				<difference>
-					<quotient>
-						<sum>
-							<product>
-								<property>velocities/q-rad_sec</property>
-								<property>velocities/u-fps</property>
-							</product>
-							<product>
-								<value>-1</value>
-								<property>velocities/p-rad_sec</property>
-								<property>velocities/v-fps</property>
-							</product>
-							<product>
-								<value>32.174</value>
-								<cos>
-									<property>attitude/theta-rad</property>
-								</cos>
-								<cos>
-									<property>attitude/phi-rad</property>
-								</cos>
-							</product>
-							<product>
-								<value>-1</value>
-								<property>accelerations/wdot-ft_sec2</property>
-							</product>
-						</sum>
-						<value>32.174</value>
-					</quotient>
-					<value>1</value>
-				</difference>
-			</function>
-		</fcs_function>
-		
-		<switch name="fbw/pitch/a_n_IaN">
-			<default value="0"/>
-			<test logic="AND" value="fbw/pitch/a_n">
-				fbw/pitch/a_n lt  30
-				fbw/pitch/a_n gt -30
-				position/wow ne 1
-			</test>
-		</switch>
-		
-		<fcs_function name="fbw/pitch/a_n-norm">
-			<function>
-				<sum>
-					<property>fbw/pitch/a_n_IaN</property>
-					<value>1</value>
-				</sum>
-			</function>
+		<pure_gain name="fbw/pitch/instrumented-g">
+			<input>/accelerations/pilot-g</input>
+			<gain>1.0</gain>
 			<output>/instrumentation/g-meter/instrumented-g</output>
-		</fcs_function>
+		</pure_gain>
 		
 		<fcs_function name="fbw/pitch/g-error">
 			<function>
 				<difference>
-					<property>fbw/pitch/a_n_IaN</property>
+					<property>fbw/pitch/instrumented-g</property>
 					<property>fbw/pitch/g-demand</property>
 				</difference>
 			</function>
@@ -736,7 +691,7 @@
 				<sum>
 					<product>
 						<difference>
-							<property>fbw/pitch/a_n_IaN</property>
+							<property>fbw/pitch/instrumented-g</property>
 							<property>fbw/pitch/g-demand</property>
 						</difference>
 						<value>0.140</value>
