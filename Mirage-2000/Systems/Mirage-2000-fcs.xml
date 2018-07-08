@@ -927,8 +927,8 @@
 			<test logic="OR" value="1">
 				fbw/yaw/rudder-nul ne 0
 				fbw/gain-switch gt 0
-				fbw/yaw/pid lt -0.299
-				fbw/yaw/pid gt 0.299
+				fbw/yaw/beta-pid lt -0.299
+				fbw/yaw/beta-pid gt 0.299
 			</test>
 		</switch>
 		
