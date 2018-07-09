@@ -13,3 +13,22 @@ var doMagicStartup = func {
 
 	setprop("/fdm/jsbsim/propulsion/set-running", 0);
 }
+
+# AirBrake handling
+controls.applyAirBrakes = func(v) {
+    setprop("/fdm/jsbsim/fbw/speedbrake-brake", v);
+}
+
+# Brake handling
+var fullBrakeTime = 0.5;
+controls.applyBrakes = func(v, which = 0) {
+	if (which <= 0) { 
+		interpolate("/controls/gear/brake-left", v, fullBrakeTime);
+	}
+	if (which >= 0) {
+		interpolate("/controls/gear/brake-right", v, fullBrakeTime);
+	}
+    if (getprop("/controls/gear/gear-down") != 0) {
+		controls.applyAirBrakes(v); # Also deploy speedbrakes when gears is down
+    }
+}

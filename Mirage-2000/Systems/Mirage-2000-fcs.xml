@@ -25,6 +25,7 @@
 	<property value="0">fbw/pitch/q-demand</property>
 	<property value="0">fbw/yaw/beta-pid</property>
 	<property value="1">fbw/pitch/instrumented-g</property>
+	<property value="0">fbw/speedbrake-brake</property>
 	
 	<!-- Autopilot stuff -->
 	<property value="0">fbw/ap/roll-enabled</property>
@@ -932,8 +933,11 @@
 		
 		<switch name="fbw/slat-output">
 			<default value="fbw/slat/function"/>
-			<test logic="OR" value="/controls/flight/flaps">
+			<test logic="AND" value="1">
 				gear/gear-pos-norm eq 1
+				fbw/enable eq 1
+			</test>
+			<test logic="OR" value="/controls/flight/flaps">
 				fbw/man-slat eq 1
 				fbw/enable eq 0
 			</test>
@@ -1215,8 +1219,17 @@
 	
 	<channel name="Airbrake">
 		
-		<kinematic name="fcs/airbrake-upper-k">
+		<summer name="fcs/airbrake-upper-sum">
 			<input>fcs/airbrake-upper-cmd</input>
+			<input>fbw/speedbrake-brake</input>
+			<clipto>
+				<min>0</min>
+				<max>1</max>
+			</clipto>
+		</summer>
+		
+		<kinematic name="fcs/airbrake-upper-k">
+			<input>fcs/airbrake-upper-sum</input>
 			<traverse>
 				<setting>
 					<position>0</position>
@@ -1246,8 +1259,17 @@
 			</range>
 		</aerosurface_scale>
 		
-		<kinematic name="fcs/airbrake-lower-k">
+		<summer name="fcs/airbrake-lower-sum">
 			<input>fcs/airbrake-lower-cmd</input>
+			<input>fbw/speedbrake-brake</input>
+			<clipto>
+				<min>0</min>
+				<max>1</max>
+			</clipto>
+		</summer>
+		
+		<kinematic name="fcs/airbrake-lower-k">
+			<input>fcs/airbrake-lower-sum</input>
 			<traverse>
 				<setting>
 					<position>0</position>
