@@ -933,11 +933,8 @@
 		
 		<switch name="fbw/slat-output">
 			<default value="fbw/slat/function"/>
-			<test logic="AND" value="1">
-				gear/gear-pos-norm eq 1
-				fbw/enable eq 1
-			</test>
 			<test logic="OR" value="/controls/flight/flaps">
+				gear/gear-pos-norm eq 1
 				fbw/man-slat eq 1
 				fbw/enable eq 0
 			</test>
