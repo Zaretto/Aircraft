@@ -73,11 +73,11 @@
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0     1     2
-						0.3 -0.90 -0.12  0.00
-						0.7 -0.30 -0.08  0.00
-						1.0 -0.16 -0.08  0.00
-						1.5 -0.14 -0.08  0.00
-						2.5 -0.11 -0.08  0.00
+						0.2 -1.09 -0.12  0.00
+						0.5 -0.51 -0.12  0.00
+						1.0 -0.16 -0.12  0.00
+						1.5 -0.14 -0.12  0.00
+						2.5 -0.11 -0.12  0.00
 					</tableData>
 				</table>
 			</function>
@@ -90,8 +90,8 @@
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0    1
-						0.3 -2.7  0.0
-						0.7 -1.9  0.0
+						0.2 -2.2  0.0
+						0.5 -1.1  0.0
 						1.0 -1.7  0.0
 						1.5 -1.6  0.0
 						2.5 -1.5  0.0
@@ -107,8 +107,8 @@
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0       1
-						0.3 -0.0045  0.0000
-						0.7 -0.0035  0.0000
+						0.2 -0.0045  0.0000
+						0.5 -0.0035  0.0000
 						1.0 -0.0030  0.0000
 						1.5 -0.0015  0.0000
 						2.5 -0.0010  0.0000
@@ -293,16 +293,18 @@
 		
 		<lag_filter name="fbw/roll/rate-stick-lag">
 			<input>fbw/roll/rate-stick</input>
-			<c1>13.6</c1>
+			<c1>14.6</c1>
 		</lag_filter>
 		
 		<switch name="fbw/roll/rad-hold">
 			<default value="0"/>
 			<test logic="AND" value="1">
-				fbw/roll/rate-stick-lag lt 0.01
-				fbw/roll/rate-stick-lag gt -0.01
+				fbw/roll/rate-stick-lag lt 0.005
+				fbw/roll/rate-stick-lag gt -0.005
 				position/wow eq 0
 				fbw/ap/roll-enabled eq 0
+				velocities/p-rad_sec lt 0.10472
+				velocities/p-rad_sec gt -0.10472
 			</test>
 		</switch>
 		
@@ -614,7 +616,7 @@
 		
 		<lag_filter name="fbw/pitch/g-command-lag">
 			<input>fbw/pitch/g-command</input>
-			<c1>17.9</c1>
+			<c1>15.9</c1>
 		</lag_filter>
 		
 		<switch name="fbw/pitch/g-demand">

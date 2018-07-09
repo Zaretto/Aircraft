@@ -227,18 +227,6 @@
     </offsets>
   </model>
 
-  <model>
-    <!-- Just a diamond displayed in the HUD above the nearest target -->
-    <name>HUD_ADDS</name>
-    <path>Aircraft/Mirage-2000/Models/Interior/Panel/Instruments/HUD/hud.xml</path>
-    <name>diamond</name>  <!-- FIXME : name already defined ! -->
-    <offsets>
-      <x-m> 0.6000 </x-m>
-      <y-m> 0.0000 </y-m>
-      <z-m> 0.1945 </z-m>
-    </offsets>
-  </model>
-
   <!-- Carburants -->
   <model>
     <path>Aircraft/Mirage-2000/Models/Interior/Panel/Instruments/Carburant/carburant.xml</path>
