@@ -24,8 +24,7 @@
 	<property value="0">fbw/roll/pid</property>
 	<property value="0">fbw/pitch/q-demand</property>
 	<property value="0">fbw/yaw/beta-pid</property>
-	<property value="0">fbw/pitch/a_n_IaN</property>
-	<property value="0">fbw/pitch/rotate-mode</property>
+	<property value="1">fbw/pitch/instrumented-g</property>
 	
 	<!-- Autopilot stuff -->
 	<property value="0">fbw/ap/roll-enabled</property>
@@ -275,14 +274,14 @@
 				<table>
 					<independentVar lookup="row">fbw/roll/aileron-modified</independentVar>
 					<independentVar lookup="column">fbw/mode</independentVar>
-					<independentVar lookup="table">fbw/pitch/a_n_IaN</independentVar>
-					<tableData breakPoint="1"> <!-- 2 G, breakPoint is guess -->
+					<independentVar lookup="table">fbw/pitch/instrumented-g</independentVar>
+					<tableData breakPoint="2"> <!-- breakPoint is guess -->
 						         0        1
 						-20.000 -4.71239 -2.61799
 						  0.000  0.00000  0.00000
 						 20.000  4.71239  2.61799
 					</tableData>
-					<tableData breakPoint="4"> <!-- 5 G, breakPoint is guess -->
+					<tableData breakPoint="5"> <!-- breakPoint is guess -->
 						         0        1
 						-20.000 -4.71239 -1.48353
 						  0.000  0.00000  0.00000
