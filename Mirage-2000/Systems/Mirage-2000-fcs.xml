@@ -140,7 +140,7 @@
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0     1
-						0.2 -0.15  0.00
+						0.2 -0.28  0.00
 						0.5 -0.10  0.00
 						1.0 -0.07  0.00
 						1.5 -0.04  0.00
@@ -157,7 +157,7 @@
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0      1
-						0.2 -0.080  0.000
+						0.2 -0.083  0.000
 						0.5 -0.075  0.000
 						1.0 -0.073  0.000
 						1.5 -0.071  0.000
@@ -294,7 +294,7 @@
 		
 		<lag_filter name="fbw/roll/rate-stick-lag">
 			<input>fbw/roll/rate-stick</input>
-			<c1>14.6</c1>
+			<c1>11.3</c1>
 		</lag_filter>
 		
 		<switch name="fbw/roll/rad-hold">
@@ -442,8 +442,8 @@
 			<input>fbw/pitch/elevator-nul</input>
 			<input>fbw/pitch/elevator-trim-nul</input>
 			<clipto>
-				<min>-1</min>
-				<max>1</max>
+				<min>-1.0</min>
+				<max>1.0</max>
 			</clipto>
 		</summer>
 		
@@ -617,7 +617,7 @@
 		
 		<lag_filter name="fbw/pitch/g-command-lag">
 			<input>fbw/pitch/g-command</input>
-			<c1>15.9</c1>
+			<c1>8.1</c1>
 		</lag_filter>
 		
 		<switch name="fbw/pitch/g-demand">
@@ -655,7 +655,7 @@
 			<input>fbw/pitch/g-error</input>
 			<kp>fbw/pitch/g-p-gain</kp>
 			<ki>fbw/pitch/g-i-gain</ki>
-			<kd>0</kd>
+			<kd>0.0</kd>
 			<trigger>fbw/pitch/g-trigger</trigger>
 			<clipto>
 				<min>-1.0</min>
@@ -752,8 +752,8 @@
 			<input>fbw/yaw/rudder-nul</input>
 			<input>fbw/yaw/rudder-trim-nul</input>
 			<clipto>
-				<min>-1</min>
-				<max>1</max>
+				<min>-1.0</min>
+				<max>1.0</max>
 			</clipto>
 		</summer>
 		
@@ -801,28 +801,6 @@
 			</test>
 		</switch>
 		
-		<fcs_function name="fbw/yaw/r-l">
-			<function>
-				<table>
-					<independentVar lookup="row">velocities/mach</independentVar>
-					<independentVar lookup="column">fbw/yaw/rudder-cmd</independentVar>
-					<independentVar lookup="table">fbw/yaw/gear</independentVar>
-					<tableData breakPoint="0">
-						    -1.0    0.0    1.0
-						0.3 -0.250  0.000  0.250
-						0.7 -0.150  0.000  0.150
-						1.0 -0.140  0.000  0.140
-						2.0 -0.100  0.000  0.100
-					</tableData>
-					<tableData breakPoint="1">
-						    -1.0    0.0    1.0
-						0.3 -0.325  0.000  0.325
-						0.7 -0.200  0.000  0.200
-					</tableData>
-				</table>
-			</function>
-		</fcs_function>
-		
 		<fcs_function name="fbw/yaw/l-f">
 			<function>
 				<product>
@@ -853,11 +831,6 @@
 			</function>
 		</fcs_function>
 		
-		<summer name="fbw/yaw/cmd">
-			<input>fbw/yaw/r-l</input>
-			<input>fbw/yaw/l-f</input>
-		</summer>
-		
 		<pure_gain name="fbw/yaw/yd-f">
 			<input>velocities/r-rad_sec</input>
 			<gain>fbw/yaw/yd-p-gain</gain>
@@ -867,17 +840,36 @@
 			</clipto>
 		</pure_gain>
 		
-		<pure_gain name="fbw/yaw/beta-p-gain-g">
-			<input>fbw/yaw/beta-p-gain</input>
-			<gain>0.2</gain>
-		</pure_gain>
+		<lag_filter name="fbw/yaw/rudder-lag">
+			<input>fbw/yaw/rudder-nul</input>
+			<c1>8.4</c1>
+		</lag_filter>
 		
-		<switch name="fbw/yaw/beta-p-gain-s">
-			<default value="fbw/yaw/beta-p-gain"/>
-			<test value="fbw/yaw/beta-p-gain-g">
-				fbw/yaw/rudder-nul ne 0
-			</test>
-		</switch>
+		<fcs_function name="fbw/yaw/beta-cmd">
+			<function>
+				<product>
+					<table>
+						<independentVar lookup="row">fbw/yaw/rudder-lag</independentVar>
+						<independentVar lookup="column">fbw/yaw/gear</independentVar>
+						<tableData>
+							      0         1
+							-1.0  0.122173  0.174533
+							 0.0  0.000000  0.000000
+							 1.0 -0.122173 -0.174533
+						</tableData>
+					</table>
+				</product>
+			</function>
+		</fcs_function>
+		
+		<fcs_function name="fbw/yaw/beta-error">
+			<function>
+				<difference>
+					<property>aero/beta-rad</property>
+					<property>fbw/yaw/beta-cmd</property>
+				</difference>
+			</function>
+		</fcs_function>
 		
 		<switch name="fbw/yaw/beta-trigger">
 			<default value="0"/>
@@ -890,8 +882,8 @@
 		</switch>
 		
 		<pid name="fbw/yaw/beta-pid-v">
-			<input>aero/beta-rad</input>
-			<kp>fbw/yaw/beta-p-gain-s</kp>
+			<input>fbw/yaw/beta-error</input>
+			<kp>fbw/yaw/beta-p-gain</kp>
 			<ki>fbw/yaw/beta-i-gain</ki>
 			<kd>fbw/yaw/beta-d-gain</kd>
 			<trigger>fbw/yaw/beta-trigger</trigger>
@@ -902,26 +894,35 @@
 			<output>fbw/yaw/beta-pid</output>
 		</pid>
 		
-		<switch name="fbw/yaw/beta-f">
-			<default value="fbw/yaw/beta-pid"/>
-			<test logic="OR" value="0">
-				fbw/yaw/rudder-nul ne 0
-			</test>
-		</switch>
-		
-		<summer name="fbw/yaw-output">
-			<input>fbw/yaw/cmd</input>
+		<summer name="fbw/yaw/active">
+			<input>fbw/yaw/l-f</input>
 			<input>fbw/yaw/yd-f</input>
-			<input>fbw/yaw/beta-f</input>
+			<input>fbw/yaw/beta-pid</input>
 		</summer>
+		
+		<pure_gain name="fbw/yaw/passive">
+			<input>fbw/yaw/rudder-nul</input>
+			<gain>0.25</gain>
+		</pure_gain>
+		
+		<switch name="fbw/yaw-output">
+			<default value="fbw/yaw/active"/>
+			<test value="fbw/yaw/passive">
+				position/wow eq 1
+			</test>
+			<clipto>
+				<min>fbw/yaw/rudder-min</min>
+				<max>fbw/yaw/rudder-max</max>
+			</clipto>
+		</switch>
 	
 	</channel>
 	
 	<channel name="FBW: Slats">
 		
-		<fcs_function>
+		<fcs_function name="fbw/slat/function">
 			<function>
-				<table name="fbw/slat/function">
+				<table>
 					<independentVar lookup="row">aero/alpha-deg</independentVar> <!-- Should really be indicated -->
 					<tableData>
 						 4  0
@@ -950,8 +951,8 @@
 				fbw/enable eq 0
 			</test>
 			<clipto>
-				<min>-1</min>
-				<max>1</max>
+				<min>-1.0</min>
+				<max>1.0</max>
 			</clipto>
 		</switch>
 		
@@ -961,8 +962,8 @@
 				fbw/enable eq 0
 			</test>
 			<clipto>
-				<min>-1</min>
-				<max>1</max>
+				<min>-1.0</min>
+				<max>1.0</max>
 			</clipto>
 		</switch>
 		
@@ -972,32 +973,32 @@
 				fbw/enable eq 0
 			</test>
 			<clipto>
-				<min>-1</min>
-				<max>1</max>
+				<min>-1.0</min>
+				<max>1.0</max>
 			</clipto>
 		</switch>
 		
 		<aerosurface_scale name="fcs/roll-pos-deg">
 			<input>fcs/roll-input</input>
 			<range>
-				<min>25</min>
-				<max>-25</max>
+				<min>25.0</min>
+				<max>-25.0</max>
 			</range>
 		</aerosurface_scale>
 		
 		<aerosurface_scale name="fcs/roll-inner-pos-deg">
 			<input>fcs/roll-inner-input</input>
 			<range>
-				<min>25</min>
-				<max>-25</max>
+				<min>25.0</min>
+				<max>-25.0</max>
 			</range>
 		</aerosurface_scale>
 		
 		<aerosurface_scale name="fcs/pitch-pos-deg">
 			<input>fcs/pitch-input</input>
 			<range>
-				<min>-25</min>
-				<max>16</max>
+				<min>-25.0</min>
+				<max>16.0</max>
 			</range>
 		</aerosurface_scale>
 		
@@ -1012,8 +1013,8 @@
 				</sum>
 			</function>
 			<clipto>
-				<min>-25</min>
-				<max>16</max>
+				<min>-25.0</min>
+				<max>16.0</max>
 			</clipto>
 		</fcs_function>
 		
@@ -1030,8 +1031,8 @@
 				</sum>
 			</function>
 			<clipto>
-				<min>-25</min>
-				<max>16</max>
+				<min>-25.0</min>
+				<max>16.0</max>
 			</clipto>
 		</fcs_function>
 		
@@ -1051,8 +1052,8 @@
 				</sum>
 			</function>
 			<clipto>
-				<min>-25</min>
-				<max>16</max>
+				<min>-25.0</min>
+				<max>16.0</max>
 			</clipto>
 		</fcs_function>
 		
@@ -1069,8 +1070,8 @@
 				</sum>
 			</function>
 			<clipto>
-				<min>-25</min>
-				<max>16</max>
+				<min>-25.0</min>
+				<max>16.0</max>
 			</clipto>
 		</fcs_function>
 		
@@ -1089,8 +1090,8 @@
 				fbw/enable eq 0
 			</test>
 			<clipto>
-				<min>-1</min>
-				<max>1</max>
+				<min>-1.0</min>
+				<max>1.0</max>
 			</clipto>
 		</switch>
 		
@@ -1141,7 +1142,7 @@
 			<traverse>
 				<setting>
 					<position>0</position>
-					<time>0</time>
+					<time>0.0</time>
 				</setting>
 				<setting>
 					<position>1</position>
@@ -1152,7 +1153,7 @@
 		
 		<pure_gain name="fcs/slat-outer">
 			<input>fcs/slat-k</input>
-			<gain>30</gain>
+			<gain>30.0</gain>
 			<output>fcs/slat-1L-pos-deg</output>
 			<output>fcs/slat-1R-pos-deg</output>
 		</pure_gain>
@@ -1160,12 +1161,12 @@
 		<aerosurface_scale name="fcs/slat-outer-norm">
 			<input>fcs/slat-outer</input>
 			<domain>
-				<min>0</min>
-				<max>30</max>
+				<min>0.0</min>
+				<max>30.0</max>
 			</domain>
 			<range>
-				<min>0</min>
-				<max>1</max>
+				<min>0.0</min>
+				<max>1.0</max>
 			</range>
 		</aerosurface_scale>
 		
@@ -1179,12 +1180,12 @@
 		<aerosurface_scale name="fcs/slat-inner-norm">
 			<input>fcs/slat-inner</input>
 			<domain>
-				<min>0</min>
+				<min>0.0</min>
 				<max>17.5</max>
 			</domain>
 			<range>
-				<min>0</min>
-				<max>1</max>
+				<min>0.0</min>
+				<max>1.0</max>
 			</range>
 		</aerosurface_scale>
 		
@@ -1201,11 +1202,11 @@
 			<input>gear/gear-cmd-norm</input>
 			<traverse>
 				<setting>
-					<position>0</position>
-					<time>0</time>
+					<position>0.0</position>
+					<time>0.0</time>
 				</setting>
 				<setting>
-					<position>1</position>
+					<position>1.0</position>
 					<time>2.5</time>
 				</setting>
 			</traverse>
@@ -1220,8 +1221,8 @@
 			<input>fcs/airbrake-upper-cmd</input>
 			<input>fbw/speedbrake-brake</input>
 			<clipto>
-				<min>0</min>
-				<max>1</max>
+				<min>0.0</min>
+				<max>1.0</max>
 			</clipto>
 		</summer>
 		
@@ -1230,29 +1231,29 @@
 			<traverse>
 				<setting>
 					<position>0</position>
-					<time>0</time>
+					<time>0.0</time>
 				</setting>
 				<setting>
 					<position>1</position>
-					<time>3</time>
+					<time>3.0</time>
 				</setting>
 			</traverse>
 		</kinematic>
 		
 		<pure_gain name="fcs/airbrake-upper">
 			<input>fcs/airbrake-upper-k</input>
-			<gain>55</gain>
+			<gain>55.0</gain>
 		</pure_gain>
 		
 		<aerosurface_scale name="fcs/airbrake-upper-norm">
 			<input>fcs/airbrake-upper</input>
 			<domain>
-				<min>0</min>
-				<max>55</max>
+				<min>0.0</min>
+				<max>55.0</max>
 			</domain>
 			<range>
-				<min>0</min>
-				<max>1</max>
+				<min>0.0</min>
+				<max>1.0</max>
 			</range>
 		</aerosurface_scale>
 		
@@ -1260,8 +1261,8 @@
 			<input>fcs/airbrake-lower-cmd</input>
 			<input>fbw/speedbrake-brake</input>
 			<clipto>
-				<min>0</min>
-				<max>1</max>
+				<min>0.0</min>
+				<max>1.0</max>
 			</clipto>
 		</summer>
 		
@@ -1270,29 +1271,29 @@
 			<traverse>
 				<setting>
 					<position>0</position>
-					<time>0</time>
+					<time>0.0</time>
 				</setting>
 				<setting>
 					<position>1</position>
-					<time>2</time>
+					<time>2.0</time>
 				</setting>
 			</traverse>
 		</kinematic>
 		
 		<pure_gain name="fcs/airbrake-lower">
 			<input>fcs/airbrake-lower-k</input>
-			<gain>68</gain>
+			<gain>68.0</gain>
 		</pure_gain>
 		
 		<aerosurface_scale name="fcs/airbrake-lower-norm">
 			<input>fcs/airbrake-lower</input>
 			<domain>
-				<min>0</min>
-				<max>68</max>
+				<min>0.0</min>
+				<max>68.0</max>
 			</domain>
 			<range>
-				<min>0</min>
-				<max>1</max>
+				<min>0.0</min>
+				<max>1.0</max>
 			</range>
 		</aerosurface_scale>
 		
