@@ -173,6 +173,13 @@
 							</script>
 						</binding>
 					</item>
+					<item>
+						<label>FBW Control</label>
+						<binding>
+							<command>dialog-show</command>
+							<dialog-name>fbw</dialog-name>
+						</binding>
+					</item>
 				</menu>
 			</default>
 		</menubar>

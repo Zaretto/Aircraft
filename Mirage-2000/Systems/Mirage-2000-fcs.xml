@@ -598,7 +598,7 @@
 							-1.000 10.5  7.5
 							-0.900  8.5  5.5 <!-- A slight null zone for the elastic stop -->
 							-0.850  8.5  5.5
-							 0.000  1.0  0.0
+							 0.000  1.0  1.0
 							 1.000 -3.5 -3.5
 						</tableData>
 					</table>
