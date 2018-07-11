@@ -981,16 +981,16 @@
 		<aerosurface_scale name="fcs/roll-pos-deg">
 			<input>fcs/roll-input</input>
 			<range>
-				<min>25.0</min>
-				<max>-25.0</max>
+				<min>-25.0</min>
+				<max>25.0</max>
 			</range>
 		</aerosurface_scale>
 		
 		<aerosurface_scale name="fcs/roll-inner-pos-deg">
 			<input>fcs/roll-inner-input</input>
 			<range>
-				<min>25.0</min>
-				<max>-25.0</max>
+				<min>-25.0</min>
+				<max>25.0</max>
 			</range>
 		</aerosurface_scale>
 		
@@ -1005,10 +1005,7 @@
 		<fcs_function name="fcs/elevon-1L-cmd-deg">
 			<function>
 				<sum>
-					<product>
-						<property>fcs/roll-pos-deg</property>
-						<value>-1</value>
-					</product>
+					<property>fcs/roll-pos-deg</property>
 					<property>fcs/pitch-pos-deg</property>
 				</sum>
 			</function>
@@ -1026,7 +1023,10 @@
 		<fcs_function name="fcs/elevon-1R-cmd-deg">
 			<function>
 				<sum>
-					<property>fcs/roll-pos-deg</property>
+					<product>
+						<property>fcs/roll-pos-deg</property>
+						<value>-1</value>
+					</product>
 					<property>fcs/pitch-pos-deg</property>
 				</sum>
 			</function>
@@ -1044,10 +1044,7 @@
 		<fcs_function name="fcs/elevon-2L-cmd-deg">
 			<function>
 				<sum>
-					<product>
-						<property>fcs/roll-inner-pos-deg</property>
-						<value>-1</value>
-					</product>
+					<property>fcs/roll-inner-pos-deg</property>
 					<property>fcs/pitch-pos-deg</property>
 				</sum>
 			</function>
@@ -1065,7 +1062,10 @@
 		<fcs_function name="fcs/elevon-2R-cmd-deg">
 			<function>
 				<sum>
-					<property>fcs/roll-inner-pos-deg</property>
+					<product>
+						<property>fcs/roll-inner-pos-deg</property>
+						<value>-1</value>
+					</product>
 					<property>fcs/pitch-pos-deg</property>
 				</sum>
 			</function>
