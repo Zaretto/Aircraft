@@ -138,9 +138,9 @@ var M2000_HUD = {
                                             obj.window1.setVisible(0);
                                       }
                                              ),
-            props.UpdateManager.FromHashValue("Nz", 0.1, func(Nz)
+            props.UpdateManager.FromHashValue("Nz", 0.01, func(Nz)
                                       {
-                                            obj.window8.setText(sprintf("%02d", Nz*10));
+                                            obj.window8.setText(sprintf("%1.1f", Nz));
                                       }),
             props.UpdateManager.FromHashValue("heading", 0.1, func(heading)
                                       {
@@ -191,7 +191,7 @@ var M2000_HUD = {
             roll: "orientation/roll-deg",
             measured_altitude: "instrumentation/altimeter/indicated-altitude-ft",
             IAS: "velocities/airspeed-kt",
-            Nz: "instrumentation/g-meter/instrumented-g",
+            Nz: "accelerations/pilot-gdamped",
             heading: "orientation/heading-deg",
             brake_parking: "controls/gear/brake-parking",
             gear_down: "controls/gear/gear-down",
