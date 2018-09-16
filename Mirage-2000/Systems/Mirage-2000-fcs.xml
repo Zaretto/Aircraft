@@ -590,22 +590,36 @@
 		<fcs_function name="fbw/pitch/g-command">
 			<function>
 				<sum>
-					<table>
-						<independentVar lookup="row">fbw/pitch/g-command-input</independentVar>
-						<independentVar lookup="column">fbw/mode</independentVar>
-						<tableData>
-							        0    1
-							-1.000 10.5  7.5
-							-0.900  8.5  5.5 <!-- A slight null zone for the elastic stop -->
-							-0.850  8.5  5.5
-							 0.000  1.0  1.0
-							 1.000 -3.5 -3.5
-						</tableData>
-					</table>
-					<product>
-						<property>fbw/pitch/elevator-trim-nul</property>
-						<value>-1.5</value> <!-- Equals +/-1.5G -->
+					<product> <!-- Reduces stick sensitivity at low speeds -->
+						<difference>
+							<table>
+								<independentVar lookup="row">fbw/pitch/g-command-input</independentVar>
+								<independentVar lookup="column">fbw/mode</independentVar>
+								<tableData>
+											0    1
+									-1.000 10.5  7.5
+									-0.900  8.5  5.5 <!-- A slight null zone for the elastic stop -->
+									-0.850  8.5  5.5
+									 0.000  1.0  1.0
+									 1.000 -3.5 -3.5
+								</tableData>
+							</table>
+							<product>
+								<property>fbw/pitch/elevator-trim-nul</property>
+								<value>-1.5</value> <!-- Equals +/-1.5G -->
+							</product>
+							<value>1.0</value>
+						</difference>
+						<table>
+							<independentVar lookup="row">velocities/mach</independentVar>
+							<tableData>
+								0.2  0.25
+								0.3  0.50
+								0.5  1.00
+							</tableData>
+						</table>
 					</product>
+					<value>1.0</value>
 					<property>fbw/pitch/thetadot-feed</property>
 				</sum>
 			</function>
@@ -696,7 +710,7 @@
 							<property>fbw/pitch/instrumented-g</property>
 							<property>fbw/pitch/g-demand</property>
 						</difference>
-						<value>0.140</value>
+						<value>0.52</value>
 					</product>
 					<value>0.15</value>
 				</sum>
@@ -764,8 +778,8 @@
 					<independentVar lookup="column">attitude/roll-rad</independentVar>
 					<tableData>
 						    0.000000  0.174533
-						22 -1.0      -1.0
-						26 -1.0       0.0
+						12 -1.0      -1.0
+						18 -1.0       0.0
 					</tableData>
 				</table>
 			</function>
