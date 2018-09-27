@@ -18,7 +18,12 @@ var LastTime              = 0;
 # Elapsed for time > 0.25 sec
 var Elapsed               = 0;
 var myErr                 = [];
-var myFramerate           = {a:0,b:0,c:0,d:0};#a = 0.1, b=0.2, c = 0.5, d=1
+var myFramerate           = {a:0,b:0,c:0,d:0,e:0,f:0};#a = 0.1, b=0.2, c = 0.5, d=1, e=1.5 ; f = 2
+
+
+var msgB = "Please land before changing payload.";
+
+
 
 #======   OBJECT CREATION =======
 
@@ -35,8 +40,24 @@ var myRadar3 = radar.Radar.new(NewRangeTab:[10, 20, 40, 60, 160], NewRangeIndex:
 setprop("/instrumentation/radar/az-fieldCenter", 0);
 
 var hud_pilot = hud.HUD.new({"node": "canvasHUD", "texture": "hud.png"});
+# var rwr = hud.HUD.new({"node": "canvasRWR", "texture": "hud.png"});
+
+var prop = "payload/armament/fire-control";
+var actuator_fc = compat_failure_modes.set_unserviceable(prop);
+FailureMgr.add_failure_mode(prop, "Fire control", actuator_fc);
+
+
+############################################################
+# Global loop function
+# If you need to run nasal as loop, add it in this function
+############################################################
+var global_system_loop = func{
+    mirage2000.weather_effects_loop();
+}
 
 #===============================
+
+
 
 var InitListener = setlistener("/sim/signals/fdm-initialized", func() {
     settimer(main_Init_Loop, 5.0);
@@ -48,7 +69,7 @@ var InitListener = setlistener("/sim/signals/fdm-initialized", func() {
 # of "engine"
 var main_Init_Loop = func()
 {
-    # Loop Updated inside
+  # Loop Updated inside
     print("Electrical ... Check");
     settimer(electrics.Electrical_init, 1.0);
     
@@ -102,6 +123,11 @@ var main_Init_Loop = func()
     {
         mirage2000.mdfselection();
     }
+    
+    
+    settimer(environment.environment, 20);
+    #Should be replaced by an object creation
+    #settimer(func(){mirage2000.createMap();},10);
 }
 
 var UpdateMain = func
@@ -114,9 +140,11 @@ var updatefunction = func()
     AbsoluteTime = getprop("/sim/time/elapsed-sec");
     #Things to update, order by refresh rate.
     
+    var AP_Alt = getprop("/autopilot/locks/altitude");
+    
     ########################### rate 0
     mirage2000.Update_SAS();
-    call(mirage2000.tfs_radar,nil,nil,nil, myErr);
+    
     
     
     # Flight Director (autopilot)
@@ -125,7 +153,6 @@ var updatefunction = func()
         call(mirage2000.update_fd,nil,nil,nil, myErr);
     }
 
-    
 
     ################## Rate 0.1 ##################
     if(AbsoluteTime - myFramerate.a > 0.05){
@@ -136,14 +163,25 @@ var updatefunction = func()
     }
     
     
-    
     ################## rate 0.5 ###############################
 
     if(AbsoluteTime - myFramerate.c > 0.5)
     {
-        call(m2000_load.Encode_Load,nil,nil,nil, myErr);
-        call(m2000_mp.Encode_Bool,nil,nil,nil, myErr);
-        myFramerate.b = AbsoluteTime;
+      #call(m2000_load.Encode_Load,nil,nil,nil, myErr);
+      call(m2000_mp.Encode_Bool,nil,nil,nil, myErr);
+      myFramerate.b = AbsoluteTime;
+      #if(getprop("autopilot/settings/tf-mode")){ <- need to find what is enabling it
+      #8 second prevision do not need to be updated each fps
+      if(AP_Alt =="TF"){
+        call(mirage2000.tfs_radar,nil,nil,nil, myErr= []);
+        if(size(myErr)) {
+          foreach(var i;myErr) {
+            print(i);
+          }
+        }
+      }
+      #mirage2000.weather_effects_loop();
+      #environment.environment();
     }
     
 
@@ -151,12 +189,44 @@ var updatefunction = func()
     ###################### rate 1 ###########################
     if(AbsoluteTime - myFramerate.d > 1)
     {
-        call(mirage2000.fuel_managment,nil,nil,nil, myErr);
-        if(getprop("/autopilot/locks/AP-status") != "AP1"){
-          call(mirage2000.update_fd,nil,nil,nil, myErr);
-        }
-        myFramerate.d = AbsoluteTime;
+      call(mirage2000.fuel_managment,nil,nil,nil, myErr);
+      if(getprop("/autopilot/locks/AP-status") != "AP1"){
+        call(mirage2000.update_fd,nil,nil,nil, myErr);
+      }
+      myFramerate.d = AbsoluteTime;
     }
+    
+    ###################### rate 1.5 ###########################
+    if(AbsoluteTime - myFramerate.e > 1.5)
+    {
+      call(environment.environment,nil,nil,nil, myErr);
+      if(size(myErr)>0){
+        #debug.printerror(myErr);
+      }
+      call(environment.max_cloud_layer,nil,nil,nil, myErr);
+      if(size(myErr)>0){
+        #debug.printerror(myErr);
+      }
+      myFramerate.e = AbsoluteTime;
+    }
+    ###################### rate 2 ###########################
+    if(AbsoluteTime - myFramerate.f > 2)
+    {
+      if(AP_Alt =="TF"){
+        call(mirage2000.long_view_avoiding,nil,nil,nil, myErr);
+        if(size(myErr)>0){
+          foreach(var i;myErr) {
+            print(i);
+          }
+        }
+      }    
+      myFramerate.f = AbsoluteTime;
+    }
+    
+    
+    
+    
+    
 
     # Update at the end
     call(mirage2000.UpdateMain,nil,nil,nil, myErr);
@@ -170,10 +240,10 @@ var init_Transpondeur = func()
     
     if(idcode != nil)
     {
-        for(var i = 0 ; i < 4 ; i += 1)
-        {
-            setprop("/instrumentation/transponder/inputs/digit[" ~ i ~ "]", int(math.mod(idcode / poweroften[i], 10)));
-        }
+      for(var i = 0 ; i < 4 ; i += 1)
+      {
+        setprop("/instrumentation/transponder/inputs/digit[" ~ i ~ "]", int(math.mod(idcode / poweroften[i], 10)));
+      }
     }
 }
 
@@ -343,3 +413,39 @@ var setCentralMFD = func() {
 
 # to prevent dynamic view to act like helicopter due to defining <rotors>:
 dynamic_view.register(func {me.default_plane();});
+
+
+
+
+var test = func(){
+      if(! contains(globals, "m2000_mp"))
+      {
+        var err = [];
+        var myTree = props.globals.getNode("/sim");
+        var raw_list = myTree.getChildren();
+        foreach(var c ; raw_list)
+        {
+          if(c.getName() == "fg-aircraft"){
+            myAircraftTree = "/sim/" ~ c.getName()~"["~c.getIndex()~"]";
+            print(myAircraftTree);
+            var err = [];
+            var file = getprop(myAircraftTree) ~ "/Mirage-2000/Nasal/MP.nas";
+            print(file);
+            var code = call(func compile(io.readfile(file), file), nil, err);
+            print("Path 0. Error : " ~size(err));
+            if(size(err) == 0)
+            {
+              call(func {io.load_nasal(file, "m2000_mp");},nil, err);
+              if (size(err)) {
+                print("Path 0a. Error : ");
+                foreach(lin;err) print(lin);
+                }else{
+                  break;}
+            }else {
+              print("Path 0b. Error : ");
+              foreach(lin;err) print(lin);
+            }
+          }
+        }
+      }
+} 

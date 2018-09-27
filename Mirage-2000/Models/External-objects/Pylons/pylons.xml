@@ -10,6 +10,7 @@
     <object-name>pylon3.L</object-name>
     <object-name>pylon4.L</object-name>
     <object-name>pylon.C</object-name>
+    <object-name>pylon.C.double_gbu</object-name>
     <object-name>pylon4.R</object-name>
     <object-name>pylon3.R</object-name>
     <object-name>pylon2.R</object-name>
@@ -23,6 +24,7 @@
     <object-name>pylon3.L</object-name>
     <object-name>pylon4.L</object-name>
     <object-name>pylon.C</object-name>
+    <object-name>pylon.C.double_gbu</object-name>
     <object-name>pylon4.R</object-name>
     <object-name>pylon3.R</object-name>
     <object-name>pylon2.R</object-name>
@@ -58,7 +60,7 @@
     <object-name>pylon1.L</object-name>
     <condition>
       <not-equals>
-        <property>sim/weight[0]/selected</property>
+        <property>payload/armament/station/id-0-set</property>
         <value>none</value>
       </not-equals>
     </condition>
@@ -69,7 +71,7 @@
     <object-name>pylon2.L</object-name>
     <condition>
       <not-equals>
-        <property>sim/weight[1]/selected</property>
+        <property>payload/armament/station/id-1-set</property>
         <value>none</value>
       </not-equals>
     </condition>
@@ -83,12 +85,12 @@
     <condition>
       <or>
         <equals>
-          <property>sim/weight[2]/selected</property>
-          <value>1700 l Droptank</value>
+          <property>payload/armament/station/id-2-set</property>
+          <value>2000 l Droptank</value>
         </equals>
         <equals>
-          <property>sim/weight[2]/selected</property>
-           <value>1300 l Droptank</value>
+          <property>payload/armament/station/id-2-set</property>
+           <value>1700 l Droptank</value>
         </equals>
       </or>
     </condition>
@@ -101,16 +103,16 @@
     <condition>
       <and>
         <not-equals>
-          <property>sim/weight[2]/selected</property>
+          <property>payload/armament/station/id-2-set</property>
           <value>none</value>
         </not-equals>
         <not-equals>
-          <property>sim/weight[2]/selected</property>
-          <value>1700 l Droptank</value>
+          <property>payload/armament/station/id-2-set</property>
+          <value>2000 l Droptank</value>
         </not-equals>
         <not-equals>
-          <property>sim/weight[2]/selected</property>
-          <value>1300 l Droptank</value>
+          <property>payload/armament/station/id-2-set</property>
+          <value>1700 l Droptank</value>
         </not-equals>
     </and>
     </condition>
@@ -121,7 +123,7 @@
     <object-name>pylon4.L</object-name>
     <condition>
       <not-equals>
-        <property>sim/weight[7]/selected</property>
+        <property>payload/armament/station/id-7-set</property>
         <value>none</value>
       </not-equals>
     </condition>
@@ -132,9 +134,20 @@
     <object-name>pylon.C</object-name>
     <condition>
       <not-equals>
-        <property>sim/weight[3]/selected</property>
+        <property>payload/armament/station/id-3-set</property>
         <value>none</value>
       </not-equals>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>pylon.C.double_gbu</object-name>
+    <condition>
+      <equals>
+        <property>payload/armament/station/id-3-set</property>
+        <value>2 x GBU-12</value>
+      </equals>
     </condition>
   </animation>
 
@@ -143,7 +156,7 @@
     <object-name>pylon1.R</object-name>
     <condition>
       <not-equals>
-        <property>sim/weight[6]/selected</property>
+        <property>payload/armament/station/id-6-set</property>
         <value>none</value>
       </not-equals>
     </condition>
@@ -154,7 +167,7 @@
     <object-name>pylon2.R</object-name>
     <condition>
       <not-equals>
-        <property>sim/weight[5]/selected</property>
+        <property>payload/armament/station/id-5-set</property>
         <value>none</value>
       </not-equals>
     </condition>
@@ -168,12 +181,12 @@
     <condition>
       <or>
        <equals>
-          <property>sim/weight[2]/selected</property>
-          <value>1700 l Droptank</value>
+          <property>payload/armament/station/id-2-set</property>
+          <value>2000 l Droptank</value>
         </equals>
         <equals>
-          <property>sim/weight[2]/selected</property>
-           <value>1300 l Droptank</value>
+          <property>payload/armament/station/id-2-set</property>
+           <value>1700 l Droptank</value>
          </equals>
         </or>
     </condition>
@@ -186,16 +199,16 @@
     <condition>
       <and>
         <not-equals>
-          <property>sim/weight[4]/selected</property>
+          <property>payload/armament/station/id-4-set</property>
           <value>none</value>
         </not-equals>
         <not-equals>
-          <property>sim/weight[2]/selected</property>
-          <value>1700 l Droptank</value>
+          <property>payload/armament/station/id-2-set</property>
+          <value>2000 l Droptank</value>
         </not-equals>
         <not-equals>
-          <property>sim/weight[2]/selected</property>
-           <value>1300 l Droptank</value>
+          <property>payload/armament/station/id-2-set</property>
+           <value>1700 l Droptank</value>
          </not-equals>
         </and>
     </condition>
@@ -206,7 +219,7 @@
     <object-name>pylon4.R</object-name>
     <condition>
       <not-equals>
-        <property>sim/weight[8]/selected</property>
+        <property>payload/armament/station/id-8-set</property>
         <value>none</value>
       </not-equals>
     </condition>

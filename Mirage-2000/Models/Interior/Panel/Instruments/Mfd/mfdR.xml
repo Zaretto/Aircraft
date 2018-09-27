@@ -31,6 +31,7 @@
     <object-name>pot-r2</object-name>
     <object-name>pot-r3</object-name>
     <object-name>pot-r4</object-name>
+    <object-name>canvasCadre</object-name>
     <!-- Objets transparents -->
     <object-name>vitre</object-name>
   </animation>
@@ -78,6 +79,7 @@
     <object-name>pot-r2</object-name>
     <object-name>pot-r3</object-name>
     <object-name>pot-r4</object-name>
+    <object-name>canvasCadre</object-name>
     <condition>
       <not>
         <property>sim/rendering/rembrandt/enabled</property>
@@ -113,6 +115,7 @@
     <object-name>pot-r2</object-name>
     <object-name>pot-r3</object-name>
     <object-name>pot-r4</object-name>
+    <object-name>canvasCadre</object-name>
     <condition>
       <property>sim/rendering/rembrandt/enabled</property>
     </condition>
@@ -345,6 +348,30 @@
       </binding>
     </action>
   </animation>
+  
+<!--  <animation>
+    <type>pick</type>
+    <object-name>pot-r1</object-name>
+    <action>
+      <button>4</button>
+
+      <repeatable>false</repeatable>
+      <binding>
+        <command>property-toggle</command>
+        <property>sim/model/click</property>
+      </binding>
+      <binding>
+        <command>nasal</command>
+        <script>mirage2000.changeZoom(1)</script>
+        <condition>
+          <equals>
+            <property>/instrumentation/mfd/modeR</property>
+            <value>2</value>
+          </equals>
+        </condition>
+      </binding>
+    </action>
+  </animation>-->
 
   <animation>
     <type>pick</type>
@@ -369,6 +396,30 @@
       </binding>
     </action>
   </animation>
+
+<!--  <animation>
+    <type>pick</type>
+    <object-name>pot-r1</object-name>
+    <action>
+      <button>4</button>
+ 
+      <repeatable>false</repeatable>
+      <binding>
+        <command>property-toggle</command>
+        <property>sim/model/click</property>
+      </binding>
+      <binding>
+        <command>nasal</command>
+        <script>mirage2000.changeZoom(-1)</script>
+        <condition>
+          <equals>
+            <property>/instrumentation/mfd/modeR</property>
+            <value>2</value>
+          </equals>
+        </condition>
+      </binding>
+    </action>
+  </animation>-->
 
   <!--  R2  -->
   <animation>
@@ -633,6 +684,16 @@
           </and>
         </condition>
       </binding>
+      <binding>
+        <command>nasal</command>
+        <script>mirage2000.myRightMfd.changeZoomMap(1)</script>
+        <condition>
+          <equals>
+            <property>/instrumentation/mfd/modeR</property>
+            <value>2</value>
+          </equals>
+        </condition>
+      </binding>
     </action>
   </animation>
 
@@ -685,6 +746,16 @@
               <value>NAV2</value>
             </equals>
           </and>
+        </condition>
+      </binding>
+      <binding>
+        <command>nasal</command>
+        <script>mirage2000.myRightMfd.changeZoomMap(-1)</script>
+        <condition>
+          <equals>
+            <property>/instrumentation/mfd/modeR</property>
+            <value>2</value>
+          </equals>
         </condition>
       </binding>
     </action>
@@ -1132,7 +1203,24 @@
   </model>
 
   <!--RWR-->
-  <model>
+   <animation>
+    <type>select</type>
+    <object-name>canvasCadre</object-name>
+    <condition>
+      <and>
+        <equals>
+          <property>/instrumentation/mfd/modeR</property>
+          <value>2</value>
+        </equals>
+        <greater-than>
+          <property>/systems/electrical/volts</property>
+          <value>12</value>
+        </greater-than>
+      </and>
+    </condition>    
+  </animation>
+  
+<!--  <model>
     <name>RWR</name>
     <path>Aircraft/Mirage-2000/Models/Interior/Panel/Instruments/Mfd/rwr/rwr.xml</path>
     <condition>
@@ -1152,7 +1240,7 @@
       <y-m>0.000</y-m>
       <z-m>0.000</z-m>
     </offsets>
-  </model>
+  </model>-->
 
   <!--EICAS-->
   <model>
@@ -1185,4 +1273,51 @@
     <z-offset> 1.4 </z-offset>
   </animation>
   -->
+
+
+  <!--
+================================================================================
+                                                                        TEXT OSG
+================================================================================
+  -->
+  <text>
+    <name>textosg</name>
+    <type type="string">literal</type>
+    <text type="string">Right MFD</text>
+    <draw-text type="bool">true</draw-text>
+    <font>Helvetica.txf</font>
+    <character-size type="double">0.016</character-size>
+    <character-aspect-ratio type="double">1.0</character-aspect-ratio>
+    <axis-alignment>yz-plane</axis-alignment>
+    <max-height>0.06</max-height>
+    <max-width>0.08</max-width>
+    <font-resolution>
+      <width type="int">64</width>
+      <height type="int">64</height>
+    </font-resolution>
+    <alignment>center-center</alignment>
+    <offsets>
+      <x-m>.02</x-m>
+      <y-m>0</y-m>
+      <z-m>0</z-m>
+    </offsets>
+  </text>
+
+  <animation>
+    <type>material</type>
+    <object-name>textosg</object-name>
+    <emission>
+      <red>1</red>
+      <green>0.2</green>
+      <blue>0.2</blue>
+    </emission>
+  </animation>
+  <animation>
+    <type>select</type>
+    <object-name>textosg</object-name>
+    <condition>
+      <property>sim/panel-hotspots</property>
+    </condition>
+  </animation>
+
 </PropertyList>

@@ -9,6 +9,7 @@ var dt       = 0;
 var isFiring = 0;
 var myGroundTarget = nil;
 var Mp = props.globals.getNode("ai/models");
+var MyActualview = props.globals.getNode("/sim/current-view/view-number");
 
 var listOfGroundOrShipVehicleModels = {
                                         "buk-m2":1, 
@@ -23,18 +24,19 @@ var listOfGroundOrShipVehicleModels = {
                                         "USS-SanAntonio":1,
                                         "ship":1,
                                         "carrier":1,
+                                        "aircraft":1,
+                                        "multiplayer":1,
                                       };
 
-
+#The function that create the ground target object when the dialog box is pressed
 var targetingGround = func()
 {
-
-    
     if(myGroundTarget == nil){
       myGroundTarget = ground_target.new();
       myGroundTarget.init();
     }
     
+    #Each time the ground target button is pressed, the life go to 900 and the AI following flag go to
     myGroundTarget.following = 0;
     myGroundTarget.life_time = 900;
     
@@ -51,21 +53,29 @@ var targetingGround = func()
     
 }
 
+# Function called when "focus on target" button is pressed.
 var focus_onTarget = func(){
   if(myGroundTarget!= nil){
     mirage2000.flir_updater.click_coord_cam = myGroundTarget.coord;
+    #print_coordinates("click_coord_cam before focus",mirage2000.flir_updater.click_coord_cam);
+    #print_coordinates("myGroundTarget",myGroundTarget.coord);
   }
 }
 
 var follow_AI_MP=func(){
-
-  if(myGroundTarget!= nil and myGroundTarget.following == 0){
-    myGroundTarget.following = 1;
-    myGroundTarget.targetedPath = nil;
-  }
-  else{
-    myGroundTarget.following = 0;
-    myGroundTarget.targetedPath = nil;
+    if(myGroundTarget!= nil){
+    if(myGroundTarget.following == 0){
+        myGroundTarget.following = 1;
+        myGroundTarget.targetedPath = nil;
+        print("Following an AI target");
+        logger.screen.green("Following an AI target");
+    }
+    else{
+        myGroundTarget.following = 0;
+        myGroundTarget.targetedPath = nil;
+        print("Stop following an AI target");
+        logger.screen.red("Stop following an AI target");
+    }
   }
 }
 
@@ -100,7 +110,9 @@ var ground_target = {
         m.ai = n.getChild("aircraft", i, 1);
         m.ai.getNode("valid", 1).setBoolValue(1);
         
-        m.id_model = "Models/Military/humvee-pickup-odrab-low-poly.xml";
+        #We will replace it by a light that will modelize the laser spot
+        m.id_model = "Aircraft/Mirage-2000/Models/lights/WhiteLight_LaserSpot.xml";
+        #m.id_model = "Models/Military/humvee-pickup-odrab-low-poly.xml";
         #m.model.getNode("path", 1).setValue(m.id_model);
         #m.life_time = 0;
         
@@ -113,11 +125,13 @@ var ground_target = {
         m.lat = m.ai.getNode("position/latitude-deg", 1);
         m.long = m.ai.getNode("position/longitude-deg", 1);
         m.alt = m.ai.getNode("position/altitude-ft", 1);
-                
+        
+        #Orientation tree
         m.hdgN   = m.ai.getNode("orientation/true-heading-deg", 1);
         m.pitchN = m.ai.getNode("orientation/pitch-deg", 1);
         m.rollN  = m.ai.getNode("orientation/roll-deg", 1);
         
+        #Radar Stuff
         m.radarRangeNM = m.ai.getNode("radar/range-nm", 1);
         m.radarbearingdeg = m.ai.getNode("radar/bearing-deg", 1);
         m.radarInRange = m.ai.getNode("radar/in-range", 1);
@@ -134,13 +148,19 @@ var ground_target = {
         m.dialog_lon = props.globals.getNode("/sim/dialog/groundtTargeting/target-longitude-deg");
         
         m.coord.set_latlon(m.dialog_lat.getValue(),m.dialog_lon.getValue());    
-        #m.coord.dump();
         var tempAlt = geo.elevation(m.dialog_lat.getValue(), m.dialog_lon.getValue(),10000);
         
         m.alt.setValue(tempAlt==nil?0:tempAlt);
         
         m.following = 0;
         m.TargetedPath = nil;
+        
+        #AI/mp target Name
+        m.AI_MP_targetName = "";
+        m.AI_MP_targetCoord = geo.Coord.new();
+        
+        #Distance for closest AI/MP
+        m.minDist = 3000;
         
         return m;
     },
@@ -157,7 +177,7 @@ var ground_target = {
           return;
         }
         
-        
+        #We take the coordinates from dialog box
         me.coord.set_latlon(me.dialog_lat.getValue(),me.dialog_lon.getValue());   
         #me.coord.dump();
         
@@ -209,20 +229,19 @@ var ground_target = {
         me.update();
         settimer(func(){ me.del(); }, me.life_time);
     },
-    update: func(CaclAlt=0)
+    update: func()
     {
         if(me.dialog_lat.getValue()==nil){
           return;
         }
         
-        # update me.coord : Could be a selectionnable option. The goal should to select multiple ground target
+        # update me.coord : Could be a selectionnable option. The goal is to be able to select multiple ground target
         
         
         me.coord.set_lat(me.dialog_lat.getValue());
         me.coord.set_lon(me.dialog_lon.getValue());   
         
-        #Altidude can't be recaclculated each time.
-        #So now it is recalculated only when tiles are loaded, on demand (CalcAlt have to be :  1)
+
         var tempGeo = geo.elevation(me.coord.lat(),me.coord.lon());
         if(tempGeo != nil and tempGeo!=0){
           me.coord.set_alt(tempGeo);
@@ -267,16 +286,22 @@ var ground_target = {
         me.vOffsetN.setDoubleValue(view.normdeg(elev - ac_pitch));
         
         if(me.following==1){me.focus_on_closest_AI_MP();}
-#        me.setView();
+        
+        if(MyActualview.getValue() == 10){
+          gui.popupTip(sprintf("Distance to target (nm): %.1f", me.radarRangeNM.getValue()));
+        }
+
         settimer(func(){ me.update(); }, 0);
     },
     
     focus_on_closest_AI_MP: func(){
+        #In order to make it follow AI/MP target each time we click on the button
+        me.TargetedPath = nil;
+    
         #Distance variable and closest_c in order to select the contact object
         #The first limitation is to limit in an AI/MP in a circle around target
-        var closest_Distance = 300;
+        var closest_Distance = me.minDist;
         var tempDistance = 0;
-
         var type = nil;
         var raw_list = nil;
         var c = nil;
@@ -284,54 +309,76 @@ var ground_target = {
         var C_lat = nil;
         var C_lon = nil;
         var Ccoord = geo.Coord.new();
+        var Check_Alt = 0;
         var ClosestCoord = geo.Coord.new();
         var index = nil;
         var path = nil;
+        var name = "";
         
-        
-        
+#         
+        #Going to the AI/MP tree
         raw_list = Mp.getChildren();
         foreach(c ; raw_list)
         {
             type = c.getName();
             index = c.getIndex();
             path = c.getPath();
+
             
             #print("Index:"~index);
             #print("Path:"~path); 
             
+            #Looking if the AI MP is valid
             if(! c.getNode("valid", 1).getValue())
             {
                 continue;
             }
+            #Looking if it fits with the vehicule type (ground) that is at the beguining of this file
             if(listOfGroundOrShipVehicleModels[type] ==1){
               C_Alt = c.getNode("position/altitude-ft");
               C_lat = c.getNode("position/latitude-deg");
               C_lon = c.getNode("position/longitude-deg");
               
+              #Eliminate itself
+              if(c.getNode("callsign", 1).getValue()=="GROUND_TARGET")
+              {
+                continue;
+              }
+                
               if(C_Alt!=nil){
+                  
+                  
                 Ccoord.set_latlon(C_lat.getValue(),C_lon.getValue(),C_Alt.getValue()*FT2M);
-                #Ccoord.dump();
+                
+                #Calculate ground altitude (to allow the following to lock on a rolling aircraft) in meters
+                Check_Alt = geo.elevation(Ccoord.lat(),Ccoord.lon(),10000);
+                Check_Alt = (Check_Alt != nil and Ccoord.alt() != nil)?(abs(Ccoord.alt() - Check_Alt)<50):0;
+                
+
+                
+                #Calculate distance
                 tempDistance = me.coord.direct_distance_to(Ccoord);
                 
-                #If we already are following a target, we do not want our focus to change to another one.
-                if(me.TargetedPath == nil){
                   #Updating coordinates
-                  if(tempDistance<closest_Distance){
+                  if(tempDistance<closest_Distance and Check_Alt){
                     #print(type ~ " : Distance:"~tempDistance);
                     closest_Distance = tempDistance;
                     ClosestCoord.set(Ccoord);
+                    me.AI_MP_targetName = c.getName();
+                    me.AI_MP_targetCoord.set(Ccoord);
+                    
+                #If we have a defined path, that mean we have locked a target. This is disabled for now
                   }elsif(me.TargetedPath == path ){
                     closest_Distance = tempDistance;
                     ClosestCoord.set(Ccoord);
                   }
-                }
               }
             }
         }
         
-        if(closest_Distance<299){
+        if(closest_Distance<me.minDist-1){
           me.setCoord(ClosestCoord);
+          #print("Name:"~me.AI_MP_targetName);
         }
     
     },
@@ -345,35 +392,10 @@ var ground_target = {
       me.dialog_lat.setValue(me.coord.lat());
       me.dialog_lon.setValue(me.coord.lon());
     },
-    setView:func(){
-      var MyAircraftCoord = geo.aircraft_position();
-      var ViewName = getprop("/sim/current-view/name");
-      var aircraftHeading = getprop("orientation/heading-deg");
-      var aircraftPitch = getprop("orientation/pitch-deg");
-      var aircraftRoll = getprop("orientation/roll-deg");
-      
-      
-      #pitch calcultation
-      var pitch = - deviation_normdeg(aircraftPitch, math.asin(( me.coord.alt() - MyAircraftCoord.alt()) / me.coord.direct_distance_to(MyAircraftCoord)) * R2D);
-      #setprop("/sim/view[102]/config/pitch-offset-deg",pitch);
-      #print("pitch:"~pitch);
-      
-      #heading calculation
-      var heading = deviation_normdeg(aircraftHeading, MyAircraftCoord.course_to(me.coord));
-      #setprop("/sim/view[102]/config/heading-offset-deg",heading);
-      
-      if(ViewName == "Sniping cam"){
-        #setprop("/sim/current-view/pitch-offset-deg", pitch);
-        setprop("/sim/current-view/heading-offset-deg",heading);
-        #setprop("/sim/current-view/roll-offset-deg", -aircraftRoll);
-      }
-      
-    } 
 };
 
 var sniping = func(){
   var coord = geo.click_position();
-  #var myDialog = gui.Dialog.new("/sim/gui/dialogs/Ground_targeting","Aircraft/Mirage-2000/gui/dialogs/Ground_targeting.xml");
   
   setprop("/sim/dialog/groundtTargeting/target-latitude-deg",coord.lat());
   setprop("/sim/dialog/groundtTargeting/target-longitude-deg",coord.lon());
@@ -409,4 +431,8 @@ var view_GPS_target = func(target)
 
 var del_target = func(){
   myGroundTarget = nil;
+}
+
+var print_coordinates = func(name,coord){
+ print(name ~ " lat: " ~   coord.lat() ~ "; lon:" ~ coord.lat()~ "; alt:" ~ coord.alt());
 }

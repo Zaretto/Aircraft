@@ -120,7 +120,6 @@
       <layout>vbox</layout>
       <halign>left</halign>
       <text><label>Activate Fly By Wire</label></text>
-      <text><label>Auto trim</label></text>
       <text><label>Attenuate micro movement</label></text>
       <text><label>A/A - CHARGES</label></text>
     </group>
@@ -134,14 +133,6 @@
         <binding>
           <command>property-toggle</command>
           <property>controls/SAS/activated</property>
-        </binding>
-      </checkbox>
-      <checkbox>
-        <property>controls/SAS/autotrim</property>
-        <live>true</live>
-        <binding>
-          <command>property-toggle</command>
-          <property>controls/SAS/autotrim</property>
         </binding>
       </checkbox>
       <checkbox>
@@ -248,16 +239,28 @@
   <hrule />
 
   <button>
-    <legend>MAP (test)</legend>
+    <legend>MAP (toggleing display)</legend>
     <binding>
       <command>nasal</command>
-      <script>mirage2000.createMap()</script>
+      <script>mirage2000.myRightMfd.changeMfD_Displaying()</script>
     </binding>
   </button>
+  
+
+  
+  
+  
+<!--  <button>
+    <legend>RWR (test)</legend>
+    <binding>
+      <command>nasal</command>
+      <script>mirage2000.createRWR()</script>
+    </binding>
+  </button>-->
 
 <!--
   <button>
-    <legend>Type</legend>
+    <legend></legend>
     <binding>
       <command>nasal</command>
       <script>mirage2000.changeindex()</script>
@@ -280,5 +283,32 @@
         </script>
     </binding>
   </button>
+
+  <hrule />
+
+  <!-- ~~~~~~~~~~~~~~~~~~ assistance -->
+  <group>
+    <layout>table</layout>
+    <halign>left</halign>
+    <button>
+      <row>0</row><col>0</col>
+      <legend>need assistance</legend>
+      <binding>
+        <command>property-assign</command>
+        <property>/controls/assistance</property>
+        <value>1</value>
+      </binding>
+    </button>
+    <button>
+      <row>0</row><col>1</col>
+      <legend>it is ok</legend>
+      <binding>
+        <command>property-assign</command>
+        <property>/controls/assistance</property>
+        <value>0</value>
+      </binding>
+    </button>
+  </group>
+
 
 </PropertyList>

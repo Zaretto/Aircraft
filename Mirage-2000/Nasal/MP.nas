@@ -9,110 +9,80 @@ var Decode_Load = {
         m.mySelf = mySelf;
         m.myString = myString;
         m.updateTime = updateTime;
-        m.running = 1;
+        m.running = 0;
         m.loadList = [
-            "none",
-            "1300 l Droptank",
-            "1700 l Droptank",
-            "AGM65",
-            "AIM-54",
-            "aim-9",
-            "AIM120",
-            "GBU12",
-            "GBU16",
-            "Matra MICA",
-            "MATRA-R530",
-            "Matra R550 Magic 2",
-            "Meteor",
-            "R74",
-            "R77",
-            "SCALP",
-            "Sea Eagle",
-            "SmokePod",
-            "ASMP",
-            "PDLCT",
-            "Matra MICA IR",
-            "Exocet"
+          "2000 l Droptank",
+          "SCALP",
+          "1700 l Droptank",
+          "AM39-Exocet",
+          "2 x GBU-12",
+          "1700 l Droptank",
+          "AS-37-Martel",
+          "PDLCT",
+          "Matra Super 530D",
+          "AS30L",
+          "30mm Cannon",
+          "none",
+          "MICA IR",
+          "1300 l Droptank",
+          "Matra R550 Magic 2",
+          "2000 l Droptank",
+          "MICA EM",
+          "ASMP"
         ];
+        m.decode();
         return m;
     },
     
     decode: func()
     {
         #print("Upload On going");
-        var myString = me.myString.getValue();
+        #var myInternalString = me.myString.getValue();
+        #print("myInternalString" ~ myInternalString);
+        
+        #Using getprop because it seems that the "myString.getValue()" does not work and I don't understand why.
+        var StringTree = me.mySelf.getNode("sim/multiplay/generic/string[1]");
+        var String = StringTree.getValue();
         var myIndexArray = [];
         
-        if(myString != nil)
+        #print("String "~String);
+        
+        if(String != nil)
         {
-            #print("the string :"~ myString);
-            #print("test" ~ me.loadList[3]);
-            # Here to detect each substring index
-            for(i = 0 ; i < size(myString) ; i += 1)
-            {
-                #print(chr(myString[i]));
-                if(chr(myString[i]) == '#')
-                {
-                    #print("We got one : " ~ i );
-                    append(myIndexArray, i);
-                }
-                #print(size(myIndexArray));
+          #String = getprop("sim/multiplay/generic/string[1]");    
+          #Index of the beguining of each set string
+          var mySetIndexArray = [];
+          #Index of the beguining of each count string
+          var myCountIndexArray = [];
+          
+          for(i = 0 ; i < size(String) ; i += 1)
+          {
+              if(chr(String[i]) == '#'){append(mySetIndexArray, i);}
+              if(chr(String[i]) == 'C'){append(myCountIndexArray, i);}
+          }
+          
+          if(size(mySetIndexArray) != size(myCountIndexArray)){return;}
+          
+          var i = 0;
+          forindex(i; mySetIndexArray){
+            var mySet = substr(String, mySetIndexArray[i] + 1, myCountIndexArray[i]-mySetIndexArray[i]-1);
+            #print("myCountIndexArray[i]:"~myCountIndexArray[i]~ " size(String):"~ size(String));
+            if(i+1<size(mySetIndexArray)){
+              var myCount = substr(String, myCountIndexArray[i] + 1, mySetIndexArray[i+1] - myCountIndexArray[i]-1);
+            }else{
+              var myCount = substr(String, myCountIndexArray[i] + 1, size(String) - myCountIndexArray[i]-1);
             }
             
-            # now we can split the substring
-            for(i = 0 ; i < size(myIndexArray) ; i += 1)
-            {
-                if(i < size(myIndexArray) - 1)
-                {
-                    #print(substr(myString, myIndexArray[i], myIndexArray[i + 1] - myIndexArray[i]));
-                    
-                    # index of weight :
-                    var myWeightIndex = substr(myString, myIndexArray[i] + 1, 1);
-                    #print("myWeightIndex:"~ myWeightIndex);
-                    
-                    # has been fired (display pylons or not)
-                    var myFired = substr(myString, myIndexArray[i] + 2, 1) == 1;
-                    #print(myFired);
-                    
-                    # what to put in weight[]/selected index
-                    var myWeightOptIndex = substr(myString, myIndexArray[i] + 3, (myIndexArray[i + 1] - 1) - (myIndexArray[i] + 2));
-                    var myWeight = me.loadList[myWeightOptIndex];
-                    #var myWeight = getprop("sim/weight["~ myWeightIndex ~"]/opt[" ~ myWeightOptIndex ~ "]/name");
-                    #print("myWeight: " ~ myWeight);
-                    
-                    # rebuilt the property Tree
-                    me.mySelf.getNode("sim/weight["~ myWeightIndex ~"]/selected", 1).setValue(myWeight);
-                    me.mySelf.getNode("controls/armament/station["~ myWeightIndex ~"]/release", 1).setValue(myFired);
-                }
-                else
-                {
-                    #print(substr(myString, myIndexArray[i], size(myString) - myIndexArray[i]));
-                    
-                    # index of weight :
-                    var myWeightIndex = substr(myString, myIndexArray[i] + 1, 1);
-                    #print(myWeightIndex);
-                    
-                    # has been fired (display pylons or not)
-                    var myFired = substr(myString, myIndexArray[i] + 2, 1) == 1;
-                    #print(myFired);
-                    
-                    # what to put in weight[]/selected
-                    var myWeightOptIndex = substr(myString, myIndexArray[i] + 3, size(myString) - (myIndexArray[i] + 2));
-                    var myWeight = me.loadList[myWeightOptIndex];
-                    #var myWeight = getprop("sim/weight["~ myWeightIndex ~"]/opt[" ~ myWeightOptIndex ~ "]/name");
-                    #print(myWeight);
-                    
-                    # rebuilt the property Tree
-                    me.mySelf.getNode("sim/weight["~ myWeightIndex ~"]/selected", 1).setValue(myWeight);
-                    me.mySelf.getNode("controls/armament/station["~ myWeightIndex ~"]/release", 1).setValue(myFired);
-                    
-                    if(me.running == 1)
-                    {
-                        settimer(func(){ me.decode(); }, me.updateTime);
-                    }
-                }
-            }
+            #print(mySet);
+            #print(myCount);
+            #print(me.loadList[mySet]);
+            me.mySelf.getNode("payload/armament/station/id-"~ i ~"-set", 1).setValue(me.loadList[mySet]);
+            me.mySelf.getNode("payload/armament/station/id-"~ i ~"-count", 1).setValue(myCount);
+            
+          }
         }
+
+        #me.mySelf.getNode("sim/weight["~ myWeightIndex ~"]/selected", 1).setValue(mySelection);
         #print(me.mySelf.getName() ~ "["~ me.mySelf.getIndex() ~"]");
     },
     stop: func()
@@ -122,12 +92,13 @@ var Decode_Load = {
 };
 
 var Encode_Bool = func(){
-  var mycomp = mirage2000.landing1_switch.getValue();
-  mycomp       = mirage2000.formation_switch.getValue()                         ~ mycomp;
-  mycomp       = mirage2000.position_switch.getValue()                          ~ mycomp;
-  mycomp       = mirage2000.tailLight_switch.getValue()                         ~ mycomp;
-  mycomp       = mirage2000.strobe2_switch.getValue()                           ~ mycomp;
-  mycomp       = mirage2000.strobe_switch.getValue()                            ~ mycomp;
+  
+  var mycomp   = instrumentation.landing1_switch.getValue();
+  mycomp       = instrumentation.formation_switch.getValue()                    ~ mycomp;
+  mycomp       = instrumentation.position_switch.getValue()                     ~ mycomp;
+  mycomp       = instrumentation.tailLight_switch.getValue()                    ~ mycomp;
+  mycomp       = instrumentation.strobe2_switch.getValue()                      ~ mycomp;
+  mycomp       = instrumentation.strobe_switch.getValue()                       ~ mycomp;
   mycomp       = props.globals.getNode("/gear/gear[0]/wow").getValue()          ~ mycomp;
   mycomp       = props.globals.getNode("/gear/gear[1]/wow").getValue()          ~ mycomp;
   mycomp       = props.globals.getNode("/gear/gear[2]/wow").getValue()          ~ mycomp;
@@ -190,7 +161,7 @@ var Decode_Bool = {
 
         if(me.running == 1)
         {
-            settimer(func(){ me.decode(); }, me.updateTime);
+            #settimer(func(){ me.decode(); }, me.updateTime);
         }
         
     },
@@ -241,4 +212,90 @@ var MP_light = {
     },
     init:func() {
     },
+  };
+  
+  var MP_missile = func(self){
+      # start missile over MP
+      #  
+      var skip = 0;
+      var lat = self.getNode("rotors/main/blade[0]/flap-deg");
+      var lon = self.getNode("rotors/main/blade[1]/flap-deg");
+      var alt = self.getNode("rotors/main/blade[2]/flap-deg");
+      if (alt == nil or alt.getValue() == nil) {
+        skip = 1;
+      }
+
+      var objs = {};
+
+      var loop = func () {
+
+        if(alt.getValue() != 0) {
+          var objModel = objs["first"];
+          if (objModel == nil) {
+            # create model
+            #print("creating missile");
+            var n = props.globals.getNode("models", 1);
+            var i = 0;
+            for (i = 0; 1==1; i += 1) {
+              if (n.getChild("model", i, 0) == nil) {
+                break;
+              }
+            }
+            objModel = n.getChild("model", i, 1);
+
+            objModel.getNode("elevation",1).setDoubleValue(0);
+            objModel.getNode("latitude",1).setDoubleValue(0);
+            objModel.getNode("longitude",1).setDoubleValue(0);
+            objModel.getNode("elevation-ft-prop",1).setValue(objModel.getPath()~"/elevation");
+            objModel.getNode("latitude-deg-prop",1).setValue(objModel.getPath()~"/latitude");
+            objModel.getNode("longitude-deg-prop",1).setValue(objModel.getPath()~"/longitude");
+            objModel.getNode("heading-deg",1).setDoubleValue(0);
+            objModel.getNode("pitch-deg",1).setDoubleValue(0);
+            objModel.getNode("roll-deg",1).setDoubleValue(0);
+            objModel.getNode("path",1).setValue("Aircraft/Mirage-2000/Missiles/MP_missile/mp_missile.xml");
+
+            var loadNode = objModel.getNode("load", 1);
+            loadNode.setBoolValue(1);
+
+            objs["first"] = objModel;
+            loadNode.remove();
+          }
+        }
+        var exist = 0;
+        if(alt.getValue() != 0) {
+          exist = 1;
+
+          var objModel = objs["first"];
+          if (objModel == nil) {
+            print("error: did not find mp missile.");
+            return;
+          }# else {
+          #  print("found a missile!");
+          #}
+          objModel.getNode("latitude").setDoubleValue(lat.getValue());
+          objModel.getNode("longitude").setDoubleValue(lon.getValue());
+          objModel.getNode("elevation").setDoubleValue(alt.getValue()*M2FT);
+
+        }
+        if (exist == 0) {
+          # remove model
+          var objModel = objs["first"];
+          if (objModel != nil) {
+            objModel.remove();
+            delete(objs, "first");
+          }
+        }
+
+        if (self.getNode("valid") == 0 or self.getNode("valid") == nil) {
+          return;
+        }
+        settimer(loop, 0.05);
+      }
+
+      if (skip == 0) {
+          loop();
+      }
+      #
+      # end missile over MP
+    
   }
