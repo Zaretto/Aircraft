@@ -71,7 +71,7 @@
     <rolling_friction>0.02</rolling_friction>
     <spring_coeff unit="LBS/FT">48000</spring_coeff>
     <damping_coeff unit="LBS/FT/SEC">4800</damping_coeff>
-    <max_steer unit="DEG">1</max_steer>
+    <max_steer unit="DEG">45</max_steer>
     <!--0: NOSE_LG-->
     <brake_group>NOSE</brake_group>
     <retractable>1</retractable>

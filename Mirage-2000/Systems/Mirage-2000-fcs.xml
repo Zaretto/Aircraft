@@ -27,6 +27,9 @@
 	<property value="1">fbw/pitch/instrumented-g</property>
 	<property value="0">fbw/speedbrake-brake</property>
 	
+	<property value="0">gear/gear-emergency-extension</property>
+	<property value="1">/controls/flight/nws-enabled</property>
+	
 	<!-- Autopilot stuff -->
 	<property value="0">fbw/ap/roll-enabled</property>
 	<property value="0">fbw/ap/pitch-enabled</property>
@@ -933,6 +936,9 @@
 		
 		<switch name="fbw/slat-output">
 			<default value="fbw/slat/function"/>
+			<test logic="OR" value="fbw/slat-output">
+				systems/hydraulics/number1-system-available eq 0
+			</test>
 			<test logic="OR" value="/controls/flight/flaps">
 				gear/gear-pos-norm eq 1
 				fbw/man-slat eq 1
@@ -1001,12 +1007,49 @@
 			</range>
 		</aerosurface_scale>
 		
+		<switch name="fcs/elevon-1L-hyd"> <!-- outer left -->
+			<default value="0"/>
+			<test logic="OR" value="1">
+				systems/hydraulics/number2-system-available eq 1
+				systems/electrics/dc-main-bus ge 25
+				systems/electrics/dc-essential-bus1 ge 25 <!-- fixme: should be on battery -->
+			</test>
+		</switch>
+		
+		<switch name="fcs/elevon-1R-hyd"> <!-- outer right -->
+			<default value="0"/>
+			<test logic="OR" value="1">
+				systems/hydraulics/number2-system-available eq 1
+				systems/electrics/dc-main-bus ge 25
+				systems/electrics/dc-essential-bus1 ge 25 <!-- fixme: should be on battery -->
+			</test>
+		</switch>
+		
+		<switch name="fcs/elevon-2L-hyd"> <!-- inner left -->
+			<default value="0"/>
+			<test logic="OR" value="1">
+				systems/hydraulics/number1-system-available eq 1
+				systems/electrics/dc-essential-bus1 ge 25 <!-- fixme: should be on battery -->
+			</test>
+		</switch>
+		
+		<switch name="fcs/elevon-2R-hyd"> <!-- inner right -->
+			<default value="0"/>
+			<test logic="OR" value="1">
+				systems/hydraulics/number1-system-available eq 1
+				systems/electrics/dc-essential-bus1 ge 25 <!-- fixme: should be on battery -->
+			</test>
+		</switch>
+		
 		<fcs_function name="fcs/elevon-1L-cmd-deg">
 			<function>
-				<sum>
-					<property>fcs/roll-pos-deg</property>
-					<property>fcs/pitch-pos-deg</property>
-				</sum>
+				<product>
+					<sum>
+						<property>fcs/roll-pos-deg</property>
+						<property>fcs/pitch-pos-deg</property>
+					</sum>
+					<property>fcs/elevon-1L-hyd</property>
+				</product>
 			</function>
 			<clipto>
 				<min>-25.0</min>
@@ -1021,13 +1064,16 @@
 		
 		<fcs_function name="fcs/elevon-1R-cmd-deg">
 			<function>
-				<sum>
-					<product>
-						<property>fcs/roll-pos-deg</property>
-						<value>-1</value>
-					</product>
-					<property>fcs/pitch-pos-deg</property>
-				</sum>
+				<product>
+					<sum>
+						<product>
+							<property>fcs/roll-pos-deg</property>
+							<value>-1</value>
+						</product>
+						<property>fcs/pitch-pos-deg</property>
+					</sum>
+					<property>fcs/elevon-1R-hyd</property>
+				</product>
 			</function>
 			<clipto>
 				<min>-25.0</min>
@@ -1042,10 +1088,13 @@
 		
 		<fcs_function name="fcs/elevon-2L-cmd-deg">
 			<function>
-				<sum>
-					<property>fcs/roll-inner-pos-deg</property>
-					<property>fcs/pitch-pos-deg</property>
-				</sum>
+				<product>
+					<sum>
+						<property>fcs/roll-inner-pos-deg</property>
+						<property>fcs/pitch-pos-deg</property>
+					</sum>
+					<property>fcs/elevon-2L-hyd</property>
+				</product>
 			</function>
 			<clipto>
 				<min>-25.0</min>
@@ -1060,13 +1109,16 @@
 		
 		<fcs_function name="fcs/elevon-2R-cmd-deg">
 			<function>
-				<sum>
-					<product>
-						<property>fcs/roll-inner-pos-deg</property>
-						<value>-1</value>
-					</product>
-					<property>fcs/pitch-pos-deg</property>
-				</sum>
+				<product>
+					<sum>
+						<product>
+							<property>fcs/roll-inner-pos-deg</property>
+							<value>-1</value>
+						</product>
+						<property>fcs/pitch-pos-deg</property>
+					</sum>
+					<property>fcs/elevon-2R-hyd</property>
+				</product>
 			</function>
 			<clipto>
 				<min>-25.0</min>
@@ -1082,6 +1134,13 @@
 	</channel>
 	
 	<channel name="Rudder">
+		<switch name="fcs/rudder-hyd">
+			<default value="0"/>
+			<test logic="OR" value="1">
+				systems/hydraulics/number2-system-available eq 1
+				systems/electrics/dc-essential-bus1 ge 25 <!-- fixme: should be on battery -->
+			</test>
+		</switch>
 		
 		<switch name="fcs/yaw-input">
 			<default value="fbw/yaw-output"/>
@@ -1094,8 +1153,17 @@
 			</clipto>
 		</switch>
 		
+		<fcs_function name="fcs/yaw-input-hyd">
+			<function>
+				<product>
+					<property>fcs/yaw-input</property>
+					<property>fcs/rudder-hyd</property>
+				</product>
+			</function>
+		</fcs_function>
+		
 		<aerosurface_scale name="fcs/yaw-input-deg">
-			<input>fcs/yaw-input</input>
+			<input>fcs/yaw-input-hyd</input>
 			<range>
 				<min>-25</min>
 				<max>25</max>
@@ -1112,15 +1180,24 @@
 	
 	<channel name="Nose Wheel">
 		
+		<switch name="fcs/dirav-enabled">
+			<default value="0"/>
+			<test logic="AND" value="1">
+				/controls/flight/nws-enabled eq 1
+				/velocities/groundspeed-kt le 40
+				systems/hydraulics/number2-system-available eq 1
+			</test>
+		</switch>
+		
 		<fcs_function name="fcs/tiller/function"> <!-- Drive the nose wheel with the rudder -->
 			<function>
 				<table>
-					<independentVar lookup="row">/velocities/groundspeed-kt</independentVar>
+					<independentVar lookup="row">fcs/dirav-enabled</independentVar>
 					<independentVar lookup="column">/controls/flight/rudder</independentVar>
 					<tableData>
-						       -1     0  1
-						30.000 -46.0  0  46.0
-						30.001  -6.0  0   6.0
+						-1        0  1
+						0 -0.0075 0  0.0075 <!-- dirav automatically disconnects at 40 knots. Allow a very small amount of control in case the rudder is not effective enough in FG -->
+						1 -1.0    0  1.0
 					</tableData>
 				</table>
 			</function>
@@ -1129,9 +1206,8 @@
 		<actuator name="fcs/steer-deg">
 			<input>fcs/tiller/function</input>
 			<rate_limit>140</rate_limit>
-			<output>fcs/steer-pos-deg[0]</output>
+			<output>fcs/steer-cmd-norm</output>
 		</actuator>
-	
 	</channel>
 	
 	<channel name="Slats">
@@ -1196,9 +1272,19 @@
 	</channel>
 	
 	<channel name="Landing Gear">
+		<switch name="fcs/gear-cmd-norm">
+			<default value="rubbish/gear-pos-norm"/> <!-- hyd not avail, and emergency extension not commanded = stuck at present position -->
+			<test logic="OR" value="1">
+				gear/gear-emergency-extension eq 1
+			</test>
+			<test  logic="OR" value="gear/gear-cmd-norm">
+				systems/hydraulics/number1-system-available eq 1
+				systems/hydraulics/number2-system-available eq 1 <!-- secours extension -->
+			</test>
+		</switch>
 		
 		<kinematic name="rubbish/gear-pos-norm">
-			<input>gear/gear-cmd-norm</input>
+			<input>fcs/gear-cmd-norm</input>
 			<traverse>
 				<setting>
 					<position>0.0</position>
@@ -1214,6 +1300,59 @@
 	
 	</channel>
 	
+	<channel name="Brakes">
+		<switch name="gear/brake-parking">
+			<default value="/controls/gear/brake-parking"/>
+			<test logic="OR" value="0">
+				systems/hydraulics/number2-system-available eq 0
+			</test>
+		</switch>
+		
+		<switch name="gear/brake-left">
+			<default value="/controls/gear/brake-left"/>
+			<test logic="OR" value="0">
+				systems/hydraulics/number1-system-available eq 0
+				systems/hydraulics/number2-system-available eq 0
+			</test>
+		</switch>
+		
+		<switch name="gear/brake-right">
+			<default value="/controls/gear/brake-right"/>
+			<test logic="OR" value="0">
+				systems/hydraulics/number1-system-available eq 0
+				systems/hydraulics/number2-system-available eq 0
+			</test>
+		</switch>
+		
+		<summer name="fcs/left-brake-summer">
+			<input>gear/brake-left</input>
+			<input>gear/brake-parking</input>
+			<clipto>
+				<min>0</min>
+				<max>1</max>
+			</clipto>
+		</summer>
+		
+		<switch name="rubbish/left-brake-cmd-norm">
+			<default value="fcs/left-brake-summer"/>
+			<output>fcs/left-brake-cmd-norm</output>
+		</switch>
+		
+		<summer name="fcs/right-brake-summer">
+			<input>gear/brake-left</input>
+			<input>gear/brake-parking</input>
+			<clipto>
+				<min>0</min>
+				<max>1</max>
+			</clipto>
+		</summer>
+		
+		<switch name="rubbish/right-brake-cmd-norm">
+			<default value="fcs/left-brake-summer"/>
+			<output>fcs/right-brake-cmd-norm</output>
+		</switch>
+	</channel>
+	
 	<channel name="Airbrake">
 		
 		<summer name="fcs/airbrake-upper-sum">
@@ -1225,8 +1364,15 @@
 			</clipto>
 		</summer>
 		
+		<switch name="fcs/airbrake-upper-hyd">
+			<default value="0"/>
+			<test logic="OR" value="fcs/airbrake-upper-sum">
+				systems/hydraulics/number1-system-available eq 1
+			</test>
+		</switch>
+		
 		<kinematic name="fcs/airbrake-upper-k">
-			<input>fcs/airbrake-upper-sum</input>
+			<input>fcs/airbrake-upper-hyd</input>
 			<traverse>
 				<setting>
 					<position>0</position>
@@ -1265,8 +1411,15 @@
 			</clipto>
 		</summer>
 		
+		<switch name="fcs/airbrake-lower-hyd">
+			<default value="0"/>
+			<test logic="OR" value="fcs/airbrake-lower-sum">
+				systems/hydraulics/number1-system-available eq 1
+			</test>
+		</switch>
+		
 		<kinematic name="fcs/airbrake-lower-k">
-			<input>fcs/airbrake-lower-sum</input>
+			<input>fcs/airbrake-lower-hyd</input>
 			<traverse>
 				<setting>
 					<position>0</position>

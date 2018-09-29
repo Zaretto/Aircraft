@@ -191,10 +191,10 @@
 		<name>Hyd-psi</name>
 		<type>rotate</type>
 		<object-name>EICAS-hyd-psi</object-name>
-		<property>systems/hydraulics/indicated-system-pressure-psi</property>
+		<property>systems/hydraulics/indicated-system-pressure</property>
 		<interpolation>
 			<entry><ind>  0</ind><dep>   0</dep></entry>
-			<entry><ind>3100</ind><dep>-200</dep></entry>
+			<entry><ind>300</ind><dep>-200</dep></entry>
 		</interpolation>
 		<center>
 			<x-m>0.0</x-m>

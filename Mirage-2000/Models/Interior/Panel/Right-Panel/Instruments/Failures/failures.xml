@@ -474,7 +474,7 @@ Mirage-2000/Docs/panel_failures.png
     <object-name>ambreA4</object-name>
     <condition>
       <less-than>
-        <property>/systems/hydraulical/circuit1_press</property>
+        <property>/fdm/jsbsim/systems/hydraulics/number1-system-pressure</property>
         <value>195</value>
       </less-than>
     </condition>
@@ -485,7 +485,7 @@ Mirage-2000/Docs/panel_failures.png
     <object-name>ambreB4</object-name>
     <condition>
       <less-than>
-        <property>/systems/hydraulical/circuit2_press</property>
+        <property>/fdm/jsbsim/systems/hydraulics/number2-system-pressure</property>
         <value>195</value>
       </less-than>
     </condition>
@@ -495,10 +495,15 @@ Mirage-2000/Docs/panel_failures.png
     <type>select</type>
     <object-name>ambreC4</object-name>
     <condition>
+	 <or>
       <less-than>
-        <property>/systems/hydraulical/circuit2_press</property>
+        <property>/fdm/jsbsim/systems/hydraulics/number2-system-pressure</property>
         <value>140</value>
       </less-than>
+	  <not>
+	   <property>/controls/hydraulics/electric-pump-switch</property>
+	  </not>
+	 </or>
     </condition>
   </animation>
 
@@ -507,10 +512,10 @@ Mirage-2000/Docs/panel_failures.png
     <type>select</type>
     <object-name>ambreD4</object-name>
     <condition>
-      <less-than>
-        <property>/systems/hydraulical/circuit2_press</property>
-        <value>160</value>
-      </less-than>
+      <equals>
+        <property>/fdm/jsbsim/systems/hydraulics/ep-running-6seconds</property>
+        <value>1</value>
+      </equals>
     </condition>
   </animation>
 
