@@ -363,6 +363,14 @@
 				</script>
 				</binding>
 			</key>
+			<key n="115">
+				<name>s</name>
+				<desc>Toggle DIRAV (NWS)</desc>
+				<binding>
+					<command>property-toggle</command>
+					<property>/controls/flight/nws-enabled</property>
+				</binding>
+			</key>
 			<key n="120">
 				<name>x</name>
 				<desc>Decrease field of view</desc>

@@ -34,14 +34,14 @@ DC Main Bus 28 V DC
         <switch name="systems/electrics/lgenerator-kva">
             <default value="0"/>
             <test  logic="AND" value="75">
-                propulsion/engine[0]/n2 ge 55
+                propulsion/engine[0]/n2 ge 47
                 systems/electrics/lgenerator-status eq 1
             </test>
         </switch>
         <switch name="systems/electrics/rgenerator-kva">
             <default value="0"/>
             <test  logic="AND" value="75">
-                propulsion/engine[0]/n2 ge 55
+                propulsion/engine[0]/n2 ge 47
                 systems/electrics/rgenerator-status eq 1
             </test>
         </switch>
