@@ -330,6 +330,9 @@
 	</input>
 	
 	<instrumentation>
+		<airspeed-indicator>
+			<indicated-speed-kt>0</indicated-speed-kt>
+		</airspeed-indicator>
 		<radar-altimeter>
 			<!--<serviceable alias="/fdm/jsbsim/systems/electrics/left-main-bus-powered"/>-->
 			<serviceable type="bool">true</serviceable>
@@ -372,6 +375,10 @@
 			<selected-system-psi alias="/fdm/jsbsim/systems/hydraulics/selected-system"/>
 		</hydraulics>
 	</systems>
+	
+	<velocities>
+		<groundspeed-kt>0</groundspeed-kt>
+	</velocities>
 	
 	<nasal>
 		<libraries>

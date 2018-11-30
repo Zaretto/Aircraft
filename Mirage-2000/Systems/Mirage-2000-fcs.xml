@@ -3,8 +3,6 @@
 
 <system name="Mirage-2000: FCS/FBW">
 	
-	<property value="0">/velocities/groundspeed-kt</property> <!-- Isn't initialized by FGFS before this loads for some reason -->
-	<property value="0">/instrumentation/airspeed-indicator/indicated-speed-kt</property> <!-- Isn't initialized by FGFS before this loads for some reason -->
 	<property value="0">fcs/elevon-1L-pos-deg</property>
 	<property value="0">fcs/elevon-1R-pos-deg</property>
 	<property value="0">fcs/elevon-2L-pos-deg</property>
@@ -73,15 +71,14 @@
 		<fcs_function name="fbw/roll/p-gain">
 			<function>
 				<table>
-					<independentVar lookup="row">velocities/mach</independentVar>
+					<independentVar lookup="row">velocities/vc-kts</independentVar>
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0     1     2
-						0.2 -1.09 -0.12  0.00
-						0.5 -0.51 -0.12  0.00
-						1.0 -0.16 -0.12  0.00
-						1.5 -0.14 -0.12  0.00
-						2.5 -0.11 -0.12  0.00
+						130 -1.09 -0.12  0.00
+						320 -0.51 -0.12  0.00
+						600 -0.16 -0.12  0.00
+						950 -0.11 -0.12  0.00
 					</tableData>
 				</table>
 			</function>
@@ -90,15 +87,14 @@
 		<fcs_function name="fbw/roll/i-gain">
 			<function>
 				<table>
-					<independentVar lookup="row">velocities/mach</independentVar>
+					<independentVar lookup="row">velocities/vc-kts</independentVar>
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0    1
-						0.2 -2.2  0.0
-						0.5 -1.1  0.0
-						1.0 -0.7  0.0
-						1.5 -0.6  0.0
-						2.5 -0.5  0.0
+						130 -2.2  0.0
+						320 -1.1  0.0
+						600 -0.7  0.0
+						950 -0.5  0.0
 					</tableData>
 				</table>
 			</function>
@@ -107,15 +103,14 @@
 		<fcs_function name="fbw/roll/d-gain">
 			<function>
 				<table>
-					<independentVar lookup="row">velocities/mach</independentVar>
+					<independentVar lookup="row">velocities/vc-kts</independentVar>
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0       1
-						0.2 -0.0045  0.0000
-						0.5 -0.0035  0.0000
-						1.0 -0.0030  0.0000
-						1.5 -0.0015  0.0000
-						2.5 -0.0010  0.0000
+						130 -0.0045  0.0000
+						320 -0.0035  0.0000
+						600 -0.0030  0.0000
+						950 -0.0010  0.0000
 					</tableData>
 				</table>
 			</function>
@@ -124,13 +119,14 @@
 		<fcs_function name="fbw/pitch/q-p-gain">
 			<function>
 				<table>
-					<independentVar lookup="row">velocities/mach</independentVar>
+					<independentVar lookup="row">velocities/vc-kts</independentVar>
+					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
-						0.2  32.1
-						0.5  12.7
-						1.0   2.3
-						1.5   0.9
-						2.5   0.7
+						     0     1
+						130  32.1  7.1
+						320  12.7  7.1
+						600   2.3  7.1
+						950   0.7  7.1
 					</tableData>
 				</table>
 			</function>
@@ -139,15 +135,12 @@
 		<fcs_function name="fbw/pitch/g-p-gain">
 			<function>
 				<table>
-					<independentVar lookup="row">velocities/mach</independentVar>
-					<independentVar lookup="column">fbw/gain-switch</independentVar>
+					<independentVar lookup="row">velocities/vc-kts</independentVar>
 					<tableData>
-						     0      1
-						0.2 -0.240 -0.054
-						0.5 -0.090 -0.054
-						1.0 -0.060 -0.054
-						1.5 -0.035 -0.054
-						2.5 -0.025 -0.054
+						130 -0.240
+						320 -0.090
+						600 -0.060
+						950 -0.025
 					</tableData>
 				</table>
 			</function>
@@ -156,15 +149,14 @@
 		<fcs_function name="fbw/pitch/g-i-gain">
 			<function>
 				<table>
-					<independentVar lookup="row">velocities/mach</independentVar>
+					<independentVar lookup="row">velocities/vc-kts</independentVar>
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0      1
-						0.2 -0.070  0.000
-						0.5 -0.062  0.000
-						1.0 -0.060  0.000
-						1.5 -0.059  0.000
-						2.5 -0.042  0.000
+						130 -0.070  0.000
+						320 -0.062  0.000
+						600 -0.060  0.000
+						950 -0.042  0.000
 					</tableData>
 				</table>
 			</function>
@@ -173,15 +165,14 @@
 		<fcs_function name="fbw/yaw/yd-p-gain">
 			<function>
 				<table>
-					<independentVar lookup="row">velocities/mach</independentVar>
+					<independentVar lookup="row">velocities/vc-kts</independentVar>
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0    1
-						0.3 -2.1  0.0
-						0.7 -1.0  0.0
-						1.0 -0.6  0.0
-						1.5 -0.3  0.0
-						2.5 -0.2  0.0
+						130 -2.1  0.0
+						320 -1.0  0.0
+						600 -0.6  0.0
+						950 -0.2  0.0
 					</tableData>
 				</table>
 			</function>
@@ -190,15 +181,14 @@
 		<fcs_function name="fbw/yaw/beta-p-gain">
 			<function>
 				<table>
-					<independentVar lookup="row">velocities/mach</independentVar>
+					<independentVar lookup="row">velocities/vc-kts</independentVar>
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0     1
-						0.2  16.0  0.0
-						0.5  12.0  0.0
-						1.0   3.5  0.0
-						1.5   2.2  0.0
-						2.5   1.5  0.0
+						130  16.0  0.0
+						320  12.0  0.0
+						600   3.5  0.0
+						950   1.5  0.0
 					</tableData>
 				</table>
 			</function>
@@ -207,15 +197,14 @@
 		<fcs_function name="fbw/yaw/beta-i-gain">
 			<function>
 				<table>
-					<independentVar lookup="row">velocities/mach</independentVar>
+					<independentVar lookup="row">velocities/vc-kts</independentVar>
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0     1
-						0.2  0.14  0.00
-						0.5  0.15  0.00
-						1.0  0.12  0.00
-						1.5  0.10  0.00
-						2.5  0.07  0.00
+						130  0.14  0.00
+						320  0.15  0.00
+						600  0.12  0.00
+						950  0.07  0.00
 					</tableData>
 				</table>
 			</function>
@@ -224,15 +213,14 @@
 		<fcs_function name="fbw/yaw/beta-d-gain">
 			<function>
 				<table>
-					<independentVar lookup="row">velocities/mach</independentVar>
+					<independentVar lookup="row">velocities/vc-kts</independentVar>
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0    1
-						0.2  9.0  0.0
-						0.5  7.0  0.0
-						1.0  2.0  0.0
-						1.5  1.7  0.0
-						2.5  1.0  0.0
+						130  9.0  0.0
+						320  7.0  0.0
+						600  2.0  0.0
+						950  1.0  0.0
 					</tableData>
 				</table>
 			</function>
@@ -568,30 +556,6 @@
 			</test>
 		</switch>
 		
-		<switch name="fbw/pitch/thetadot-gain">
-			<default value="-35"/>
-			<test logic="OR" value="35">
-				attitude/roll-rad lt -1.5708
-				attitude/roll-rad gt 1.5708
-			</test>
-		</switch>
-		
-		<scheduled_gain name="fbw/pitch/thetadot-feed">
-			<input>velocities/thetadot-rad_sec</input>
-			<table>
-				<independentVar lookup="row">velocities/mach</independentVar>
-				<tableData>
-					0.2  0.7
-					0.5  1.0
-				</tableData>
-			</table>
-			<gain>fbw/pitch/thetadot-gain</gain>
-			<clipto>
-				<min>-0.05</min>
-				<max>0.05</max>
-			</clipto>
-		</scheduled_gain>
-		
 		<fcs_function name="fbw/pitch/g-command">
 			<function>
 				<sum>
@@ -625,7 +589,6 @@
 						</table>
 					</product>
 					<value>1.0</value>
-					<property>fbw/pitch/thetadot-feed</property>
 				</sum>
 			</function>
 			<clipto>
@@ -819,12 +782,11 @@
 						</tableData>
 					</table>
 					<table>
-						<independentVar lookup="row">velocities/mach</independentVar>
+						<independentVar lookup="row">velocities/vc-kts</independentVar>
 						<tableData>
-							0.5  0.950
-							1.0  0.450
-							1.5  0.250
-							2.0  0.150
+							320  0.950
+							600  0.450
+							950  0.150
 						</tableData>
 					</table>
 				</product>

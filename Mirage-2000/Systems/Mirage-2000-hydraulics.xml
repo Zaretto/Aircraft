@@ -19,7 +19,6 @@
 	<property value="0">systems/hydraulics/emerg-electric-pump-power</property>
 	<property value="0">systems/hydraulics/ep-running-6seconds</property>
 	<property value="0">systems/electrics/dc-main-bus</property>
-	<property value="0">/instrumentation/airspeed-indicator/indicated-speed-kt</property> <!-- Isn't initialized by FGFS before this loads for some reason -->
 	
     <channel name="Hydraulic System" execrate="30">
 		<scheduled_gain name="systems/hydraulics/number1-system-pump-bar"> <!-- what is accessory relay? For now put on engine! -->
