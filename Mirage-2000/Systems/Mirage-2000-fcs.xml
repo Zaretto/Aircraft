@@ -1102,6 +1102,7 @@
 	</channel>
 	
 	<channel name="Rudder">
+		
 		<switch name="fcs/rudder-hyd">
 			<default value="0"/>
 			<test logic="OR" value="1">
@@ -1138,11 +1139,12 @@
 			</range>
 		</aerosurface_scale>
 		
-		<lag_filter name="rubbish/rudder-pos-deg">
+		<actuator name="rubbish/rudder-pos-deg">
 			<input>fcs/yaw-input-deg</input>
-			<c1>26.4</c1>
+			<rate_limit>3150</rate_limit> <!-- 126 * 25 degrees -->
+			<lag>24.7</lag>
 			<output>fcs/rudder-pos-deg</output>
-		</lag_filter>
+		</actuator>
 	
 	</channel>
 	
@@ -1163,9 +1165,9 @@
 					<independentVar lookup="row">fcs/dirav-enabled</independentVar>
 					<independentVar lookup="column">/controls/flight/rudder</independentVar>
 					<tableData>
-						-1        0  1
-						0 -0.0075 0  0.0075 <!-- dirav automatically disconnects at 40 knots. Allow a very small amount of control in case the rudder is not effective enough in FG -->
-						1 -1.0    0  1.0
+						  -1       0       1
+						0 -0.0075  0.0000  0.0075 <!-- dirav automatically disconnects at 40 knots. Allow a very small amount of control in case the rudder is not effective enough in FG -->
+						1 -1.0000  0.0000  1.0000
 					</tableData>
 				</table>
 			</function>
@@ -1176,6 +1178,7 @@
 			<rate_limit>140</rate_limit>
 			<output>fcs/steer-cmd-norm</output>
 		</actuator>
+	
 	</channel>
 	
 	<channel name="Slats">
