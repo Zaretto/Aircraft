@@ -860,7 +860,6 @@
 		<switch name="fbw/yaw/beta-trigger">
 			<default value="0"/>
 			<test logic="OR" value="-1">
-				fbw/yaw/rudder-nul ne 0
 				fbw/gain-switch gt 0
 			</test>
 			<test logic="OR" value="1">
