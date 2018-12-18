@@ -810,8 +810,24 @@
 			</clipto>
 		</pure_gain>
 		
+		<fcs_function name="fbw/yaw/rudder-fixed">
+			<function>
+				<sum>
+					<property>fbw/yaw/rudder-nul</property>
+					<product>
+						<property>fbw/yaw/rudder-trim-nul</property>
+						<value>0.5</value>
+					</product>
+				</sum>
+			</function>
+			<clipto>
+				<min>-1.0</min>
+				<max>1.0</max>
+			</clipto>
+		</fcs_function>
+		
 		<lag_filter name="fbw/yaw/rudder-lag">
-			<input>fbw/yaw/rudder-nul</input>
+			<input>fbw/yaw/rudder-fixed</input>
 			<c1>8.4</c1>
 		</lag_filter>
 		
@@ -823,9 +839,9 @@
 						<independentVar lookup="column">fbw/yaw/gear</independentVar>
 						<tableData>
 							      0         1
-							-1.0  0.122173  0.174533
+							-1.0  0.261799  0.349066
 							 0.0  0.000000  0.000000
-							 1.0 -0.122173 -0.174533
+							 1.0 -0.261799 -0.349066
 						</tableData>
 					</table>
 				</product>
@@ -872,14 +888,9 @@
 			<input>fbw/yaw/beta-pid</input>
 		</summer>
 		
-		<pure_gain name="fbw/yaw/passive">
-			<input>fbw/yaw/rudder-nul</input>
-			<gain>0.5</gain>
-		</pure_gain>
-		
 		<switch name="fbw/yaw-output">
 			<default value="fbw/yaw/active"/>
-			<test value="fbw/yaw/passive">
+			<test value="fcs/rudder-sum">
 				position/wow eq 1
 			</test>
 			<clipto>
