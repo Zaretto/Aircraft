@@ -296,14 +296,10 @@
 			</function>
 		</fcs_function>
 		
-		<fcs_function name="fbw/roll/rad-error">
-			<function>
-				<difference>
-					<property>attitude/roll-rad</property>
-					<property>fbw/roll/rad</property>
-				</difference>
-			</function>
-		</fcs_function>
+		<summer name="fbw/roll/rad-error">
+			<input>attitude/roll-rad</input>
+			<input>-fbw/roll/rad</input>
+		</summer>
 		
 		<pure_gain name="fbw/roll/rad-rate">
 			<input>fbw/roll/rad-error</input>
@@ -326,14 +322,10 @@
 			</test>
 		</switch>
 		
-		<fcs_function name="fbw/roll/rate-error">
-			<function>
-				<difference>
-					<property>velocities/p-rad_sec</property>
-					<property>fbw/roll/rate-demand</property>
-				</difference>
-			</function>
-		</fcs_function>
+		<summer name="fbw/roll/rate-error">
+			<input>velocities/p-rad_sec</input>
+			<input>-fbw/roll/rate-demand</input>
+		</summer>
 		
 		<switch name="fbw/roll/trigger">
 			<default value="0"/>
@@ -544,22 +536,24 @@
 				<sum>
 					<product> <!-- Reduces stick sensitivity at low speeds -->
 						<difference>
-							<table>
-								<independentVar lookup="row">fbw/pitch/g-command-input</independentVar>
-								<independentVar lookup="column">fbw/mode</independentVar>
-								<tableData>
-											0    1
-									-1.000 10.5  7.5
-									-0.900  8.5  5.5 <!-- A slight null zone for the elastic stop -->
-									-0.850  8.5  5.5
-									 0.000  1.0  1.0
-									 1.000 -3.5 -3.5
-								</tableData>
-							</table>
-							<product> <!-- Equals +/-1.0G -->
-								<property>fbw/pitch/elevator-trim-nul</property>
-								<value>-1.0</value>
-							</product>
+							<sum>
+								<table>
+									<independentVar lookup="row">fbw/pitch/g-command-input</independentVar>
+									<independentVar lookup="column">fbw/mode</independentVar>
+									<tableData>
+												0    1
+										-1.000 10.5  7.5
+										-0.900  8.5  5.5 <!-- A slight null zone for the elastic stop -->
+										-0.850  8.5  5.5
+										 0.000  1.0  1.0
+										 1.000 -3.5 -3.5
+									</tableData>
+								</table>
+								<product> <!-- Equals +/-1.0G -->
+									<property>fbw/pitch/elevator-trim-nul</property>
+									<value>-1.0</value>
+								</product>
+							</sum>
 							<value>1.0</value>
 						</difference>
 						<table>
@@ -598,14 +592,10 @@
 			<output>/instrumentation/g-meter/instrumented-g</output>
 		</pure_gain>
 		
-		<fcs_function name="fbw/pitch/g-error">
-			<function>
-				<difference>
-					<property>fbw/pitch/instrumented-g</property>
-					<property>fbw/pitch/g-demand</property>
-				</difference>
-			</function>
-		</fcs_function>
+		<summer name="fbw/pitch/g-error">
+			<input>fbw/pitch/instrumented-g</input>
+			<input>-fbw/pitch/g-demand</input>
+		</summer>
 		
 		<switch name="fbw/pitch/g-trigger">
 			<default value="0"/>
@@ -831,14 +821,10 @@
 			</function>
 		</fcs_function>
 		
-		<fcs_function name="fbw/yaw/beta-error">
-			<function>
-				<difference>
-					<property>aero/beta-rad</property>
-					<property>fbw/yaw/beta-cmd</property>
-				</difference>
-			</function>
-		</fcs_function>
+		<summer name="fbw/yaw/beta-error">
+			<input>aero/beta-rad</input>
+			<input>-fbw/yaw/beta-cmd</input>
+		</summer>
 		
 		<pure_gain name="fbw/yaw/beta-p">
 			<input>fbw/yaw/beta-error</input>
