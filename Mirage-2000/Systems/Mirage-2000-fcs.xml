@@ -1140,24 +1140,27 @@
 			</test>
 		</switch>
 		
-		<fcs_function name="fcs/tiller/function"> <!-- Drive the nose wheel with the rudder -->
+		<fcs_function name="fcs/steer-function">
 			<function>
-				<table>
-					<independentVar lookup="row">fcs/dirav-enabled</independentVar>
-					<independentVar lookup="column">/controls/flight/rudder</independentVar>
-					<tableData>
-						  -1       0       1
-						0 -0.0075  0.0000  0.0075 <!-- dirav automatically disconnects at 40 knots. Allow a very small amount of control in case the rudder is not effective enough in FG -->
-						1 -1.0000  0.0000  1.0000
-					</tableData>
-				</table>
+				<product>
+					<property>fcs/dirav-enabled</property>
+					<table>
+						<independentVar lookup="row">/velocities/groundspeed-kt</independentVar>
+						<independentVar lookup="column">/controls/flight/rudder</independentVar>
+						<tableData>
+								   -1     0    1
+							 0.500  00.0  0.0  00.0
+							 1.000 -45.0  0.0  45.0
+						</tableData>
+					</table>
+				</product>
 			</function>
 		</fcs_function>
 		
 		<actuator name="fcs/steer-deg">
-			<input>fcs/tiller/function</input>
+			<input>fcs/steer-function</input>
 			<rate_limit>140</rate_limit>
-			<output>fcs/steer-cmd-norm</output>
+			<output>fcs/steer-pos-deg</output>
 		</actuator>
 	
 	</channel>
@@ -1254,6 +1257,7 @@
 	</channel>
 	
 	<channel name="Brakes">
+		
 		<switch name="gear/brake-parking">
 			<default value="/controls/gear/brake-parking"/>
 			<test logic="OR" value="0">
