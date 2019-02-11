@@ -1004,7 +1004,7 @@
 		
 		<actuator name="fcs/elevon-1L-pos-deg">
 			<input>fcs/elevon-1L-cmd-deg</input>
-			<rate_limit>1150</rate_limit> <!-- 46 * 25 degrees -->
+			<rate_limit>150</rate_limit>
 			<lag>26.7</lag>
 		</actuator>
 		
@@ -1029,7 +1029,7 @@
 		
 		<actuator name="fcs/elevon-1R-pos-deg">
 			<input>fcs/elevon-1R-cmd-deg</input>
-			<rate_limit>1150</rate_limit> <!-- 46 * 25 degrees -->
+			<rate_limit>150</rate_limit>
 			<lag>26.7</lag>
 		</actuator>
 		
@@ -1051,7 +1051,7 @@
 		
 		<actuator name="fcs/elevon-2L-pos-deg">
 			<input>fcs/elevon-2L-cmd-deg</input>
-			<rate_limit>1150</rate_limit> <!-- 46 * 25 degrees -->
+			<rate_limit>150</rate_limit>
 			<lag>26.7</lag>
 		</actuator>
 		
@@ -1076,7 +1076,7 @@
 		
 		<actuator name="fcs/elevon-2R-pos-deg">
 			<input>fcs/elevon-2R-cmd-deg</input>
-			<rate_limit>1150</rate_limit> <!-- 46 * 25 degrees -->
+			<rate_limit>150</rate_limit>
 			<lag>26.7</lag>
 		</actuator>
 	
@@ -1119,7 +1119,7 @@
 		
 		<actuator name="rubbish/rudder-pos-deg">
 			<input>fcs/yaw-input-deg</input>
-			<rate_limit>3150</rate_limit> <!-- 126 * 25 degrees -->
+			<rate_limit>145</rate_limit>
 			<lag>24.7</lag>
 			<output>fcs/rudder-pos-deg</output>
 		</actuator>
