@@ -1,5 +1,5 @@
 <!-- Mirage 2000 FCS/FBW -->
-<!-- Joshua Davidson (it0uchpods) -->
+<!-- Copyright (c) 2019 Joshua Davidson (it0uchpods) -->
 
 <system name="Mirage-2000: FCS/FBW">
 	
@@ -56,14 +56,34 @@
 			</test>
 		</switch>
 		
+		<switch name="fcs/electric-avail">
+			<default value="0"/>
+			<test logic="OR" value="1">
+				systems/electrics/dc-main-bus ge 25
+				systems/electrics/dc-essential-bus1 ge 25 <!-- fixme: should be on battery -->
+			</test>
+		</switch>
+		
+		<switch name="fcs/hydraulic-avail">
+			<default value="0"/>
+			<test logic="OR" value="1">
+				systems/hydraulics/number1-system-available eq 1
+				systems/hydraulics/number2-system-available eq 1
+			</test>
+		</switch>
+		
 		<switch name="fbw/gain-switch">
 			<default value="0"/>
 			<test logic="AND" value="1">
 				position/wow eq 1
 				fbw/enable eq 1
+				fcs/electric-avail eq 1
+				fcs/hydraulic-avail eq 1
 			</test>
-			<test value="2">
+			<test logic="OR" value="2">
 				fbw/enable eq 0
+				fcs/electric-avail ne 1
+				fcs/hydraulic-avail ne 1
 			</test>
 		</switch>
 		
@@ -635,7 +655,7 @@
 			</function>
 		</fcs_function>
 		
-		<pure_gain name="fbw/pitch/q-final">
+		<pure_gain name="fbw/pitch-output">
 			<input>fbw/pitch/q-error</input>
 			<gain>fbw/pitch/q-p-gain</gain>
 			<clipto>
@@ -643,19 +663,6 @@
 				<max>0.64</max>
 			</clipto>
 		</pure_gain>
-		
-		<fcs_function name="fbw/pitch-output">
-			<function>
-				<table>
-					<independentVar lookup="row">fbw/pitch/q-final</independentVar>
-					<tableData>
-						-1.00 -1.0
-						 0.00  0.0
-						 0.64  1.0
-					</tableData>
-				</table>
-			</function>
-		</fcs_function>
 	
 	</channel>
 	
@@ -773,12 +780,17 @@
 			</function>
 		</fcs_function>
 		
-		<pure_gain name="fbw/yaw/yd-f">
+		<washout_filter name="fbw/yaw/r-washout">
 			<input>velocities/r-rad_sec</input>
+			<c1>0.5</c1>
+		</washout_filter>
+		
+		<pure_gain name="fbw/yaw/yd-f">
+			<input>fbw/yaw/r-washout</input>
 			<gain>fbw/yaw/yd-p-gain</gain>
 			<clipto>
-				<min>-0.3</min>
-				<max>0.3</max>
+				<min>-0.5</min>
+				<max>0.5</max>
 			</clipto>
 		</pure_gain>
 		
@@ -901,6 +913,18 @@
 	
 	<channel name="Elevons">
 		
+		<fcs_function name="fcs/elevon-droop">
+			<function>
+				<table>
+					<independentVar lookup="row">velocities/vc-kts</independentVar>
+					<tableData>
+						62  16
+						74   0
+					</tableData>
+				</table>
+			</function>
+		</fcs_function>
+		
 		<switch name="fcs/roll-input">
 			<default value="fbw/roll-output"/>
 			<test value="fbw/roll/aileron-nul">
@@ -944,57 +968,28 @@
 			<gain>25.0</gain>
 		</pure_gain>
 		
-		<aerosurface_scale name="fcs/pitch-pos-deg">
+		<pure_gain name="fcs/pitch-pos-deg">
 			<input>fcs/pitch-input</input>
-			<range>
+			<gain>25.0</gain>
+			<clipto>
 				<min>-25.0</min>
 				<max>16.0</max>
-			</range>
-		</aerosurface_scale>
-		
-		<switch name="fcs/elevon-1L-hyd"> <!-- outer left -->
-			<default value="0"/>
-			<test logic="OR" value="1">
-				systems/hydraulics/number2-system-available eq 1
-				systems/electrics/dc-main-bus ge 25
-				systems/electrics/dc-essential-bus1 ge 25 <!-- fixme: should be on battery -->
-			</test>
-		</switch>
-		
-		<switch name="fcs/elevon-1R-hyd"> <!-- outer right -->
-			<default value="0"/>
-			<test logic="OR" value="1">
-				systems/hydraulics/number2-system-available eq 1
-				systems/electrics/dc-main-bus ge 25
-				systems/electrics/dc-essential-bus1 ge 25 <!-- fixme: should be on battery -->
-			</test>
-		</switch>
-		
-		<switch name="fcs/elevon-2L-hyd"> <!-- inner left -->
-			<default value="0"/>
-			<test logic="OR" value="1">
-				systems/hydraulics/number1-system-available eq 1
-				systems/electrics/dc-essential-bus1 ge 25 <!-- fixme: should be on battery -->
-			</test>
-		</switch>
-		
-		<switch name="fcs/elevon-2R-hyd"> <!-- inner right -->
-			<default value="0"/>
-			<test logic="OR" value="1">
-				systems/hydraulics/number1-system-available eq 1
-				systems/electrics/dc-essential-bus1 ge 25 <!-- fixme: should be on battery -->
-			</test>
-		</switch>
+			</clipto>
+		</pure_gain>
 		
 		<fcs_function name="fcs/elevon-1L-cmd-deg">
 			<function>
-				<product>
+				<ifthen>
+					<eq>
+						<property>systems/hydraulics/number2-system-available</property>
+						<value>1</value>
+					</eq>
 					<sum>
 						<property>fcs/roll-pos-deg</property>
 						<property>fcs/pitch-pos-deg</property>
 					</sum>
-					<property>fcs/elevon-1L-hyd</property>
-				</product>
+					<property>fcs/elevon-droop</property>
+				</ifthen>
 			</function>
 			<clipto>
 				<min>-25.0</min>
@@ -1010,7 +1005,11 @@
 		
 		<fcs_function name="fcs/elevon-1R-cmd-deg">
 			<function>
-				<product>
+				<ifthen>
+					<eq>
+						<property>systems/hydraulics/number2-system-available</property>
+						<value>1</value>
+					</eq>
 					<sum>
 						<product>
 							<property>fcs/roll-pos-deg</property>
@@ -1018,8 +1017,8 @@
 						</product>
 						<property>fcs/pitch-pos-deg</property>
 					</sum>
-					<property>fcs/elevon-1R-hyd</property>
-				</product>
+					<property>fcs/elevon-droop</property>
+				</ifthen>
 			</function>
 			<clipto>
 				<min>-25.0</min>
@@ -1035,13 +1034,17 @@
 		
 		<fcs_function name="fcs/elevon-2L-cmd-deg">
 			<function>
-				<product>
+				<ifthen>
+					<eq>
+						<property>systems/hydraulics/number1-system-available</property>
+						<value>1</value>
+					</eq>
 					<sum>
 						<property>fcs/roll-inner-pos-deg</property>
 						<property>fcs/pitch-pos-deg</property>
 					</sum>
-					<property>fcs/elevon-2L-hyd</property>
-				</product>
+					<property>fcs/elevon-droop</property>
+				</ifthen>
 			</function>
 			<clipto>
 				<min>-25.0</min>
@@ -1057,7 +1060,11 @@
 		
 		<fcs_function name="fcs/elevon-2R-cmd-deg">
 			<function>
-				<product>
+				<ifthen>
+					<eq>
+						<property>systems/hydraulics/number1-system-available</property>
+						<value>1</value>
+					</eq>
 					<sum>
 						<product>
 							<property>fcs/roll-inner-pos-deg</property>
@@ -1065,8 +1072,8 @@
 						</product>
 						<property>fcs/pitch-pos-deg</property>
 					</sum>
-					<property>fcs/elevon-2R-hyd</property>
-				</product>
+					<property>fcs/elevon-droop</property>
+				</ifthen>
 			</function>
 			<clipto>
 				<min>-25.0</min>
@@ -1084,14 +1091,6 @@
 	
 	<channel name="Rudder">
 		
-		<switch name="fcs/rudder-hyd">
-			<default value="0"/>
-			<test logic="OR" value="1">
-				systems/hydraulics/number2-system-available eq 1
-				systems/electrics/dc-essential-bus1 ge 25 <!-- fixme: should be on battery -->
-			</test>
-		</switch>
-		
 		<switch name="fcs/yaw-input">
 			<default value="fbw/yaw-output"/>
 			<test value="fcs/rudder-sum">
@@ -1103,22 +1102,20 @@
 			</clipto>
 		</switch>
 		
-		<fcs_function name="fcs/yaw-input-hyd">
-			<function>
-				<product>
-					<property>fcs/yaw-input</property>
-					<property>fcs/rudder-hyd</property>
-				</product>
-			</function>
-		</fcs_function>
-		
 		<pure_gain name="fcs/yaw-input-deg">
-			<input>fcs/yaw-input-hyd</input>
+			<input>fcs/yaw-input</input>
 			<gain>25.0</gain>
 		</pure_gain>
 		
+		<switch name="fcs/yaw-input-deg-hyd">
+			<default value="0"/>
+			<test value="fcs/yaw-input-deg">
+				systems/hydraulics/number2-system-available eq 1
+			</test>
+		</switch>
+		
 		<actuator name="rubbish/rudder-pos-deg">
-			<input>fcs/yaw-input-deg</input>
+			<input>fcs/yaw-input-deg-hyd</input>
 			<rate_limit>145</rate_limit>
 			<lag>24.7</lag>
 			<output>fcs/rudder-pos-deg</output>
