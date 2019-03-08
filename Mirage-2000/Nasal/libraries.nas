@@ -14,6 +14,15 @@ var doMagicStartup = func {
 	setprop("/fdm/jsbsim/propulsion/set-running", 0);
 }
 
+# Prevent a JSB bug
+var down = 1;
+setlistener("/controls/gear/gear-down", func {
+	down = getprop("/controls/gear/gear-down");
+	if (!down and (getprop("/gear/gear[0]/wow") or getprop("/gear/gear[1]/wow") or getprop("/gear/gear[2]/wow"))) {
+		setprop("/controls/gear/gear-down", 1);
+	}
+});
+
 # AirBrake handling
 controls.applyAirBrakes = func(v) {
     setprop("/fdm/jsbsim/fbw/speedbrake-brake", v);

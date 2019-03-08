@@ -18,7 +18,8 @@
 	
 	<property value="1">fbw/enable</property>
 	<property value="0">fbw/mode</property> <!-- 0: Air/Air (default), 1: Charges -->
-	<property value="0">fbw/man-slat</property>
+	<property value="0">fbw/man-slat</property> <!-- Debugging -->
+	<property value="0">fbw/man-yaw</property> <!-- Debugging -->
 	<property value="0">fbw/roll/pid</property>
 	<property value="0">fbw/pitch/q-demand</property>
 	<property value="0">fbw/yaw/beta-d</property>
@@ -197,15 +198,15 @@
 			</function>
 		</fcs_function>
 		
-		<fcs_function name="fbw/yaw/beta-p-gain">
+		<fcs_function name="fbw/yaw/beta-p-gain"> <!-- Change gains once beta runaway problem is fixed -->
 			<function>
 				<table>
 					<independentVar lookup="row">velocities/vc-kts</independentVar>
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0     1
-						130  16.0  0.0
-						320  12.0  0.0
+						130  14.0  0.0
+						320  10.0  0.0
 						600   3.5  0.0
 						950   1.5  0.0
 					</tableData>
@@ -272,15 +273,15 @@
 					<independentVar lookup="table">fbw/pitch/instrumented-g</independentVar>
 					<tableData breakPoint="2"> <!-- breakPoint is guess -->
 						         0        1
-						-20.000 -4.71239 -2.61799
-						  0.000  0.00000  0.00000
-						 20.000  4.71239  2.61799
+						-20 -4.71239 -2.61799
+						  0  0.00000  0.00000
+						 20  4.71239  2.61799
 					</tableData>
 					<tableData breakPoint="5"> <!-- breakPoint is guess -->
 						         0        1
-						-20.000 -4.71239 -1.48353
-						  0.000  0.00000  0.00000
-						 20.000  4.71239  1.48353
+						-20 -4.71239 -1.48353
+						  0  0.00000  0.00000
+						 20  4.71239  1.48353
 					</tableData>
 				</table>
 			</function>
@@ -925,6 +926,13 @@
 			</function>
 		</fcs_function>
 		
+		<switch name="fcs/elevon-rate">
+			<default value="100"/>
+			<test value="1000"> <!-- FBW needs this to work smoothly -->
+				fbw/gain-switch eq 0
+			</test>
+		</switch>
+		
 		<switch name="fcs/roll-input">
 			<default value="fbw/roll-output"/>
 			<test value="fbw/roll/aileron-nul">
@@ -999,7 +1007,7 @@
 		
 		<actuator name="fcs/elevon-1L-pos-deg">
 			<input>fcs/elevon-1L-cmd-deg</input>
-			<rate_limit>150</rate_limit>
+			<rate_limit>fcs/elevon-rate</rate_limit>
 			<lag>26.7</lag>
 		</actuator>
 		
@@ -1028,7 +1036,7 @@
 		
 		<actuator name="fcs/elevon-1R-pos-deg">
 			<input>fcs/elevon-1R-cmd-deg</input>
-			<rate_limit>150</rate_limit>
+			<rate_limit>fcs/elevon-rate</rate_limit>
 			<lag>26.7</lag>
 		</actuator>
 		
@@ -1054,7 +1062,7 @@
 		
 		<actuator name="fcs/elevon-2L-pos-deg">
 			<input>fcs/elevon-2L-cmd-deg</input>
-			<rate_limit>150</rate_limit>
+			<rate_limit>fcs/elevon-rate</rate_limit>
 			<lag>26.7</lag>
 		</actuator>
 		
@@ -1083,7 +1091,7 @@
 		
 		<actuator name="fcs/elevon-2R-pos-deg">
 			<input>fcs/elevon-2R-cmd-deg</input>
-			<rate_limit>150</rate_limit>
+			<rate_limit>fcs/elevon-rate</rate_limit>
 			<lag>26.7</lag>
 		</actuator>
 	
@@ -1091,10 +1099,18 @@
 	
 	<channel name="Rudder">
 		
+		<switch name="fcs/rudder-rate"> <!-- Remove once beta runaway problem is fixed -->
+			<default value="95"/>
+			<test value="1000"> <!-- FBW needs this to work smoothly -->
+				fbw/gain-switch eq 0
+			</test>
+		</switch>
+		
 		<switch name="fcs/yaw-input">
 			<default value="fbw/yaw-output"/>
-			<test value="fcs/rudder-sum">
+			<test logic="OR" value="fcs/rudder-sum">
 				fbw/enable eq 0
+				fbw/man-yaw eq 1
 			</test>
 			<clipto>
 				<min>-1.0</min>
@@ -1116,7 +1132,7 @@
 		
 		<actuator name="rubbish/rudder-pos-deg">
 			<input>fcs/yaw-input-deg-hyd</input>
-			<rate_limit>145</rate_limit>
+			<rate_limit>95</rate_limit>
 			<lag>24.7</lag>
 			<output>fcs/rudder-pos-deg</output>
 		</actuator>
@@ -1153,7 +1169,7 @@
 		
 		<actuator name="fcs/steer-deg">
 			<input>fcs/steer-function</input>
-			<rate_limit>140</rate_limit>
+			<rate_limit>fcs/rudder-rate</rate_limit>
 			<output>fcs/steer-pos-deg</output>
 		</actuator>
 	

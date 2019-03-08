@@ -105,7 +105,7 @@
 				<stretch type="bool">true</stretch>
 			</hrule>
 			<text>
-				<label>Slat</label>
+				<label>Debugging</label>
 			</text>
 			<hrule>
 				<stretch type="bool">true</stretch>
@@ -113,10 +113,20 @@
 		</group>
 		
 		<checkbox>
-			<label>Disable Auto-Slat (Debugging)</label>
-			<halign>center</halign>
+			<label>Disable Auto-Slat Control</label>
+			<halign>left</halign>
 			<live>true</live>
 			<property>/fdm/jsbsim/fbw/man-slat</property>
+			<binding>
+				<command>dialog-apply</command>
+			</binding>
+		</checkbox>
+		
+		<checkbox>
+			<label>Disable Yaw FBW Control Law</label>
+			<halign>left</halign>
+			<live>true</live>
+			<property>/fdm/jsbsim/fbw/man-yaw</property>
 			<binding>
 				<command>dialog-apply</command>
 			</binding>
