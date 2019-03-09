@@ -5173,6 +5173,7 @@
     <function name="aero/c/CMN1">
     <description>BASIC YAWING MOMENT</description>
     <product>
+      <v>-1</v>
           <table>
             <independentVar lookup="row">aero/alpha-deg</independentVar>
             <independentVar lookup="column">aero/beta-deg</independentVar>
