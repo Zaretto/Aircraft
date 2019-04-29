@@ -34,9 +34,7 @@
             </table>
             <clipto>
                 <min> 0 </min>
-                <max>
-                    <property>systems/hydraulics/normal-pressure</property>
-                </max>
+                <max>systems/hydraulics/normal-pressure</max>
             </clipto>
         </scheduled_gain>
 		
@@ -53,9 +51,7 @@
             </table>
             <clipto>
                 <min> 0 </min>
-                <max>
-                    <property>systems/hydraulics/normal-pressure</property>
-                </max>
+                <max>systems/hydraulics/normal-pressure</max>
             </clipto>
         </scheduled_gain>
 		
@@ -72,9 +68,7 @@
             </table>
             <clipto>
                 <min> 0 </min>
-                <max>
-                    <property>systems/hydraulics/electric-pump-normal-pressure</property>
-                </max>
+                <max>systems/hydraulics/electric-pump-normal-pressure</max>
             </clipto>
         </scheduled_gain>
 		
@@ -91,9 +85,7 @@
             </table>
             <clipto>
                 <min> 0 </min>
-                <max>
-                    <property>systems/hydraulics/electric-pump-normal-pressure</property>
-                </max>
+                <max>systems/hydraulics/electric-pump-normal-pressure</max>
             </clipto>
         </scheduled_gain>
 		
