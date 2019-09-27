@@ -6,10 +6,10 @@
 
     <fileheader>
         <author>Richard Harrison</author>
-        <filecreationdate>2019-09-16</filecreationdate>
+        <filecreationdate>2019-09-27</filecreationdate>
         <version>1.0</version>
         <copyright>Copyright (C) 2017 Richard Harrison, All rights reserved</copyright>
-        <description>Dassault Mirage 2000-5 Aerodynamic data built from vspaero; CG (8.56, 0, 1.422)M, 2019-09-16 11:19</description>
+        <description>Dassault Mirage 2000-5 Aerodynamic data built from vspaero; CG (8.56, 0, 1.422)M, 2019-09-27 07:19</description>
         <note>Built using VSPAERO. VSPAero control sub surfaces are used for the elevons, slats and rudder. These are all then processed and this data is built from the results (together with the -stab to get the derivatives)</note>
         <note>Aircraft origin for measurements is the nose</note>
         <note>VSPAERO notes: Rudder deflection is LE right. Elevator is TE down.</note>
@@ -1069,6 +1069,32 @@
           </table>
        </product>
     </function>
+    <function name="aero/coefficients/CFXmn">
+    <description>DRAG DUE TO MACH</description>
+          <table>
+            <independentVar lookup="row">velocities/mach</independentVar>
+            <independentVar lookup="column">aero/alpha-deg</independentVar>
+            <tableData>
+                                -10	         -1	       0.01	          1	         10	
+                    0.2	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                    0.4	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                    0.6	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                    0.8	0.01211000	0.00000000	0.00013000	0.00054000	0.01569000	
+                    0.9	0.01696000	0.00000000	0.00027000	0.00108000	0.02285000	
+                   0.97	0.02130000	0.00000000	0.00048000	0.00182000	0.02773000	
+                   0.99	0.01950000	0.00000000	0.00061000	0.00226000	0.02209000	
+                    1.2	0.12435000	0.01751000	0.01064000	0.00551000	0.08921000	
+                    1.3	0.11073000	0.01677000	0.01089000	0.00600000	0.06670000	
+                    1.4	0.09223000	0.01551000	0.01024000	0.00610000	0.05767000	
+                    1.5	0.08170000	0.01467000	0.01033000	0.00681000	0.05008000	
+                    1.6	0.08597000	0.01660000	0.01184000	0.00813000	0.05875000	
+                    1.8	0.15398000	0.03628000	0.02887000	0.02142000	0.07136000	
+                      2	0.10161000	0.01927000	0.01565000	0.01228000	0.05435000	
+                    2.2	0.08391000	0.01549000	0.01174000	0.00940000	0.04098000	
+                    2.5	0.06024000	0.01151000	0.00877000	0.00688000	0.03075000	
+            </tableData>
+          </table>
+    </function>
     <function name="aero/coefficients/CFZB">
     <description>BASIC LIFT</description>
           <table>
@@ -1438,6 +1464,32 @@
             </tableData>
           </table>
        </product>
+    </function>
+    <function name="aero/coefficients/CFZmn">
+    <description>LIFT DUE TO MACH</description>
+          <table>
+            <independentVar lookup="row">velocities/mach</independentVar>
+            <independentVar lookup="column">aero/alpha-deg</independentVar>
+            <tableData>
+                                -10	         -1	       0.01	          1	         10	
+                    0.2	0.12391000	0.00062000	-0.00409000	-0.00883000	-0.12611000	
+                    0.4	0.07898000	0.00038000	-0.00280000	-0.00590000	-0.08224000	
+                    0.6	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                    0.8	-0.06996000	0.00035000	0.00564000	0.01066000	0.08178000	
+                    0.9	-0.04798000	0.00255000	0.01138000	0.02082000	0.08150000	
+                   0.97	-0.05025000	0.00430000	0.01931000	0.03454000	0.10554000	
+                   0.99	-0.05850000	0.00520000	0.02425000	0.04313000	0.12612000	
+                    1.2	0.15786000	-0.03255000	-0.03444000	-0.03697000	-0.16831000	
+                    1.3	0.20648000	-0.03313000	-0.04178000	-0.04761000	-0.24979000	
+                    1.4	0.24304000	-0.03207000	-0.04269000	-0.05336000	-0.28275000	
+                    1.5	0.25775000	-0.03196000	-0.04519000	-0.05671000	-0.29192000	
+                    1.6	0.24454000	-0.03662000	-0.04754000	-0.05944000	-0.26883000	
+                    1.8	0.07461000	-0.07839000	-0.08368000	-0.07678000	-0.22609000	
+                      2	0.12718000	-0.05890000	-0.06140000	-0.06043000	-0.20751000	
+                    2.2	0.17460000	-0.06004000	-0.06868000	-0.07608000	-0.28017000	
+                    2.5	0.25964000	-0.05073000	-0.06595000	-0.08082000	-0.34758000	
+            </tableData>
+          </table>
     </function>
     <function name="aero/coefficients/CMM1">
     <description>BASIC PITCHING MOMENT</description>
@@ -1951,6 +2003,32 @@
             </tableData>
           </table>
        </product>
+    </function>
+    <function name="aero/coefficients/CMMmnw">
+    <description>PITCH DUE TO MACH</description>
+          <table>
+            <independentVar lookup="row">velocities/mach</independentVar>
+            <independentVar lookup="column">aero/alpha-deg</independentVar>
+            <tableData>
+                                -10	         -1	       0.01	          1	         10	
+                    0.2	-0.01799000	0.00189000	0.00299000	0.00462000	0.03916000	
+                    0.4	-0.01159000	0.00126000	0.00209000	0.00313000	0.02555000	
+                    0.6	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                    0.8	0.01855000	-0.00229000	-0.00431000	-0.00632000	-0.03472000	
+                    0.9	0.03167000	-0.00431000	-0.00864000	-0.01318000	-0.05124000	
+                   0.97	0.05798000	-0.00620000	-0.01505000	-0.02353000	-0.08348000	
+                   0.99	0.07750000	-0.00707000	-0.01930000	-0.03073000	-0.01783353	
+                    1.2	-0.03375000	-0.00784000	-0.00867000	-0.01203000	-0.03858000	
+                    1.3	-0.02439000	-0.00559000	-0.00435000	-0.01067000	-0.04453000	
+                    1.4	0.01222000	-0.00254000	-0.00527000	-0.00799000	-0.03839000	
+                    1.5	0.00220000	0.00123000	-0.00438000	-0.00727000	-0.04659000	
+                    1.6	0.00775000	0.00513000	-0.00483000	-0.00649000	-0.04988000	
+                    1.8	0.02181000	0.00645000	-0.00837000	-0.01204000	-0.06453000	
+                      2	0.04561000	-0.00109000	-0.01026000	-0.01836000	-0.07800000	
+                    2.2	0.06549000	0.00979000	0.00337000	-0.00757000	-0.05827000	
+                    2.5	0.03530000	0.01225000	0.00498000	0.00095000	-0.02778000	
+            </tableData>
+          </table>
     </function>
     <function name="aero/coefficients/CMMQ">
     <description>PITCH DAMPING DERIVATIVE</description>
@@ -2508,6 +2586,32 @@
           </table>
        </product>
     </function>
+    <function name="aero/coefficients/CMLmnw">
+    <description>ROLL DUE TO MACH</description>
+          <table>
+            <independentVar lookup="row">velocities/mach</independentVar>
+            <independentVar lookup="column">aero/alpha-deg</independentVar>
+            <tableData>
+                                -10	         -1	       0.01	          1	         10	
+                    0.2	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                    0.4	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                    0.6	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                    0.8	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                    0.9	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                   0.97	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                   0.99	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                    1.2	0.00219000	0.00000000	-0.00038000	0.00006000	0.00078000	
+                    1.3	0.00070000	0.00068000	0.00083000	-0.00026000	0.00002000	
+                    1.4	-0.00174000	0.00044000	-0.00028000	-0.00015000	0.00399000	
+                    1.5	0.00128000	0.00017000	0.00001000	-0.00087000	-0.00020000	
+                    1.6	-0.00148000	0.00155000	0.00011000	-0.00030000	-0.00057000	
+                    1.8	-0.01853000	-0.00017000	-0.00162000	-0.00160000	0.00438000	
+                      2	-0.00024000	0.00088000	0.00017000	0.00070000	0.00091000	
+                    2.2	0.00024000	0.00067000	-0.00093000	0.00020000	-0.00030000	
+                    2.5	-0.00164000	-0.00032000	0.00055000	0.00002000	0.00007000	
+            </tableData>
+          </table>
+    </function>
     <function name="aero/coefficients/CMLP">
     <description>ROLL DAMPING DERIVATIVE</description>
     <product>
@@ -3050,6 +3154,32 @@
             </tableData>
           </table>
        </product>
+    </function>
+    <function name="aero/coefficients/CFYmn">
+    <description>SIDE FORCE DUE TO MACH</description>
+          <table>
+            <independentVar lookup="row">velocities/mach</independentVar>
+            <independentVar lookup="column">aero/alpha-deg</independentVar>
+            <tableData>
+                                -10	         -1	       0.01	          1	         10	
+                    0.2	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                    0.4	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                    0.6	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                    0.8	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                    0.9	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                   0.97	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                   0.99	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                    1.2	0.00214000	-0.00001000	-0.00005000	-0.00001000	-0.00125000	
+                    1.3	0.00083000	0.00014000	-0.00026000	-0.00024000	0.00019000	
+                    1.4	0.00132000	-0.00001000	-0.00004000	0.00023000	0.00245000	
+                    1.5	0.00110000	0.00004000	0.00020000	-0.00044000	0.00035000	
+                    1.6	-0.00272000	0.00005000	0.00011000	0.00027000	0.00095000	
+                    1.8	0.03537000	0.00373000	0.00343000	0.00087000	0.00498000	
+                      2	0.01546000	0.00258000	0.00283000	0.00127000	0.00140000	
+                    2.2	0.00718000	0.00245000	0.00120000	0.00082000	0.00065000	
+                    2.5	0.00639000	0.00141000	0.00085000	0.00062000	0.00060000	
+            </tableData>
+          </table>
     </function>
     <function name="aero/coefficients/CFYP">
     <description>SIDE FORCE DUE TO ROLL RATE</description>
@@ -3636,6 +3766,32 @@
           </table>
        </product>
     </function>
+    <function name="aero/coefficients/CMNmnw">
+    <description>YAW DUE TO MACH</description>
+          <table>
+            <independentVar lookup="row">velocities/mach</independentVar>
+            <independentVar lookup="column">aero/alpha-deg</independentVar>
+            <tableData>
+                                -10	         -1	       0.01	          1	         10	
+                    0.2	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                    0.4	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                    0.6	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                    0.8	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                    0.9	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                   0.97	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                   0.99	0.00000000	0.00000000	0.00000000	0.00000000	0.00000000	
+                    1.2	-0.00209000	0.00000000	0.00009000	-0.00009000	-0.00060000	
+                    1.3	-0.00021000	0.00008000	-0.00017000	-0.00016000	-0.00001000	
+                    1.4	0.00099000	0.00023000	-0.00009000	0.00007000	0.00089000	
+                    1.5	0.00019000	0.00018000	-0.00007000	0.00021000	0.00014000	
+                    1.6	-0.00182000	-0.00027000	-0.00001000	0.00024000	-0.00053000	
+                    1.8	0.00683000	0.00173000	0.00040000	0.00028000	0.00186000	
+                      2	0.00361000	0.00069000	0.00045000	0.00038000	0.00027000	
+                    2.2	0.00073000	0.00017000	0.00043000	0.00022000	0.00016000	
+                    2.5	0.00092000	0.00015000	0.00025000	0.00013000	0.00008000	
+            </tableData>
+          </table>
+    </function>
     <function name="aero/coefficients/CMNP">
     <description>YAWING MOMENT DUE TO ROLL RATE</description>
     <product>
@@ -3706,6 +3862,7 @@
           <property>aero/coefficients/CFZDSBU</property>
           <property>aero/coefficients/CFZDEL</property>
           <property>aero/coefficients/CFZGEAR</property>
+          <property>aero/coefficients/CFZmn</property>
        </sum>
     </function>
   <axis name="LIFT">
@@ -3731,6 +3888,7 @@
           <property>aero/coefficients/CFXDSBU</property>
           <property>aero/coefficients/CFXDSBL</property>
           <property>aero/coefficients/CFXGEAR</property>
+          <property>aero/coefficients/CFXmn</property>
        </sum>
     </function>
   <axis name="DRAG">
@@ -3757,6 +3915,7 @@
           <property>aero/coefficients/CFYDSD2L</property>
           <property>aero/coefficients/CFYDSD2R</property>
           <property>aero/coefficients/CFYGEAR</property>
+          <property>aero/coefficients/CFYmn</property>
        </sum>
     </function>
   <axis name="SIDE">
@@ -3783,6 +3942,7 @@
           <property>aero/coefficients/CMLDSD2L</property>
           <property>aero/coefficients/CMLDSD2R</property>
           <property>aero/coefficients/CMLGEAR</property>
+          <property>aero/coefficients/CMLmnw</property>
        </sum>
     </function>
   <axis name="ROLL">
@@ -3810,6 +3970,7 @@
           <property>aero/coefficients/CMMDSBU</property>
           <property>aero/coefficients/CMMDSBL</property>
           <property>aero/coefficients/CMMGEAR</property>
+          <property>aero/coefficients/CMMmnw</property>
        </sum>
     </function>
   <axis name="PITCH">
@@ -3837,6 +3998,7 @@
           <property>aero/coefficients/CMNDRDr</property>
           <property>aero/coefficients/CMNP</property>
           <property>aero/coefficients/CMNR</property>
+          <property>aero/coefficients/CMNmnw</property>
        </sum>
     </function>
   <axis name="YAW">
@@ -3866,6 +4028,7 @@
         <property caption="CFXDSD2L">aero/coefficients/CFXDSD2L</property>
         <property caption="CFXDSD2R">aero/coefficients/CFXDSD2R</property>
         <property caption="CFXGEAR">aero/coefficients/CFXGEAR</property>
+        <property caption="CFXmn">aero/coefficients/CFXmn</property>
         <property caption="CFYB">aero/coefficients/CFYB</property>
         <property caption="CFYDED1L">aero/coefficients/CFYDED1L</property>
         <property caption="CFYDED1R">aero/coefficients/CFYDED1R</property>
@@ -3877,6 +4040,7 @@
         <property caption="CFYDSD2L">aero/coefficients/CFYDSD2L</property>
         <property caption="CFYDSD2R">aero/coefficients/CFYDSD2R</property>
         <property caption="CFYGEAR">aero/coefficients/CFYGEAR</property>
+        <property caption="CFYmn">aero/coefficients/CFYmn</property>
         <property caption="CFYP">aero/coefficients/CFYP</property>
         <property caption="CFYR">aero/coefficients/CFYR</property>
         <property caption="CFZB">aero/coefficients/CFZB</property>
@@ -3889,6 +4053,7 @@
         <property caption="CFZDSD1L">aero/coefficients/CFZDSD1L</property>
         <property caption="CFZDSD1R">aero/coefficients/CFZDSD1R</property>
         <property caption="CFZGEAR">aero/coefficients/CFZGEAR</property>
+        <property caption="CFZmn">aero/coefficients/CFZmn</property>
         <property caption="CLIFT">aero/coefficients/CLIFT</property>
         <property caption="CML1">aero/coefficients/CML1</property>
         <property caption="CMLDED1L">aero/coefficients/CMLDED1L</property>
@@ -3901,6 +4066,7 @@
         <property caption="CMLDSD2L">aero/coefficients/CMLDSD2L</property>
         <property caption="CMLDSD2R">aero/coefficients/CMLDSD2R</property>
         <property caption="CMLGEAR">aero/coefficients/CMLGEAR</property>
+        <property caption="CMLmnw">aero/coefficients/CMLmnw</property>
         <property caption="CMLP">aero/coefficients/CMLP</property>
         <property caption="CMLR">aero/coefficients/CMLR</property>
         <property caption="CMM1">aero/coefficients/CMM1</property>
@@ -3915,6 +4081,7 @@
         <property caption="CMMDSD2L">aero/coefficients/CMMDSD2L</property>
         <property caption="CMMDSD2R">aero/coefficients/CMMDSD2R</property>
         <property caption="CMMGEAR">aero/coefficients/CMMGEAR</property>
+        <property caption="CMMmnw">aero/coefficients/CMMmnw</property>
         <property caption="CMMQ">aero/coefficients/CMMQ</property>
         <property caption="CMN1">aero/coefficients/CMN1</property>
         <property caption="CMNDED1L">aero/coefficients/CMNDED1L</property>
@@ -3927,6 +4094,7 @@
         <property caption="CMNDSD2L">aero/coefficients/CMNDSD2L</property>
         <property caption="CMNDSD2R">aero/coefficients/CMNDSD2R</property>
         <property caption="CMNGEAR">aero/coefficients/CMNGEAR</property>
+        <property caption="CMNmnw">aero/coefficients/CMNmnw</property>
         <property caption="CMNP">aero/coefficients/CMNP</property>
         <property caption="CMNR">aero/coefficients/CMNR</property>
         <property caption="CPITCH">aero/coefficients/CPITCH</property>
@@ -3958,6 +4126,7 @@
         <property caption="l-total-lbsft">moments/l-total-lbsft</property>
         <property caption="m-total-lbsft">moments/m-total-lbsft</property>
         <property caption="n-total-lbsft">moments/n-total-lbsft</property>
+        <property caption="mach">velocities/mach</property>
         <property caption="p-aero-rad_sec">velocities/p-aero-rad_sec</property>
         <property caption="q-aero-rad_sec">velocities/q-aero-rad_sec</property>
         <property caption="r-aero-rad_sec">velocities/r-aero-rad_sec</property>
