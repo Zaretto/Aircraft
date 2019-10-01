@@ -169,7 +169,8 @@
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0     1
-						130  6.0  4.5
+						130  7.4  4.5
+						200  6.0  4.5
 						350  3.0  4.5
 						600  1.5  4.5
 						950  1.0  4.5
@@ -185,7 +186,8 @@
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0    1
-						130  8.0  0.0
+						130  8.9  0.0
+						200  8.0  0.0
 						350  6.0  0.0
 						600  5.0  0.0
 						950  4.0  0.0
@@ -201,7 +203,8 @@
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0     1
-						130  0.60  0.00
+						130  0.69  0.00
+						200  0.60  0.00
 						350  0.40  0.00
 						600  0.10  0.00
 						950  0.04  0.00
@@ -218,6 +221,7 @@
 					<tableData>
 						     0    1
 						130 -2.1  0.0
+						200 -1.8  0.0
 						350 -1.0  0.0
 						600 -0.6  0.0
 						950 -0.2  0.0
@@ -226,17 +230,18 @@
 			</function>
 		</fcs_function>
 		
-		<fcs_function name="fbw/yaw/beta-p-gain"> <!-- Change gains once beta runaway problem is fixed -->
+		<fcs_function name="fbw/yaw/beta-p-gain">
 			<function>
 				<table>
 					<independentVar lookup="row">velocities/vc-kts</independentVar>
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
-						     0     1
-						130  10.0  0.0
-						350   7.0  0.0
-						600   3.5  0.0
-						950   1.5  0.0
+						     0    1
+						130  8.4  0.0
+						200  7.0  0.0
+						350  5.0  0.0
+						600  2.0  0.0
+						950  1.0  0.0
 					</tableData>
 				</table>
 			</function>
@@ -249,10 +254,11 @@
 					<independentVar lookup="column">fbw/gain-switch</independentVar>
 					<tableData>
 						     0    1
-						130  9.0  0.0
-						350  5.0  0.0
-						600  2.0  0.0
-						950  1.0  0.0
+						130  4.5  0.0
+						200  4.0  0.0
+						350  3.0  0.0
+						600  1.0  0.0
+						950  0.5  0.0
 					</tableData>
 				</table>
 			</function>
