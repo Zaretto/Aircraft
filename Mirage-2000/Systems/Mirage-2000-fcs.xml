@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 
 <!-- Mirage 2000 FCS/FBW -->
 <!-- Copyright (c) 2019 Joshua Davidson (Octal450) -->
@@ -40,7 +40,8 @@
 	<property value="0">fbw/yaw/yd-p-gain</property>
 	<property value="0">fbw/yaw/beta-p-gain</property>
 	<property value="0">fbw/yaw/beta-d-gain</property>
-	
+	<property value="140">fcs/rudder-rate</property>
+
 	<channel name="Libraries">
 		
 		<switch name="position/wow">
@@ -1171,7 +1172,7 @@
 			<default value="0"/>
 			<test logic="AND" value="1">
 				/controls/flight/nws-enabled eq 1
-				/velocities/groundspeed-kt le 40
+				velocities/vtrue-kts le 40
 				systems/hydraulics/number2-system-available eq 1
 			</test>
 		</switch>
@@ -1181,7 +1182,7 @@
 				<product>
 					<property>fcs/dirav-enabled</property>
 					<table>
-						<independentVar lookup="row">/velocities/groundspeed-kt</independentVar>
+						<independentVar lookup="row">velocities/vtrue-kts</independentVar>
 						<independentVar lookup="column">/controls/flight/rudder</independentVar>
 						<tableData>
 								   -1     0    1
