@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0"?>
 
 <!-- Mirage 2000 FCS/FBW -->
+<!-- Licenced under GPL -->
 <!-- Copyright (c) 2019 Joshua Davidson (Octal450) -->
+<!-- Copyright (c) 2020 Richard Harrison -->
 
 <system name="Mirage-2000: FCS/FBW">
 	
@@ -10,7 +12,7 @@
 	
 	<property value="1">fbw/enable</property>
 	<property value="0">fbw/mode</property> <!-- 0: Air/Air (default), 1: Charges -->
-	<property value="1">fbw/man-slat</property> <!-- Debugging -->
+	<property value="0">fbw/man-slat</property> <!-- Debugging -->
 	<property value="0">fbw/man-yaw</property> <!-- Debugging -->
 	<property value="0">fbw/roll/pid</property>
 	<property value="0">fbw/pitch/q-demand</property>
@@ -928,29 +930,130 @@
 	
 	</channel>
 	
-	<channel name="FBW: Slats">
+	<channel name="FBW: Auto slats based on alpha">
 		
-		<fcs_function name="fbw/slat/function">
-			<function>
-				<table>
-					<independentVar lookup="row">aero/alpha-deg</independentVar> <!-- Should really be indicated -->
-					<tableData>
-						 4  0
-						10  1
-					</tableData>
-				</table>
-			</function>
-		</fcs_function>
-		
+        <fcs_function name="fbw/slat/fully-extended-max-mn">
+            <function>
+                    <table>
+                        <independentVar lookup="row">position/h-sl-ft</independentVar>
+                        <tableData>
+                               0	0.5105
+                            28500	0.8516
+                            35000	0.8595
+                            40000	0.8643
+                        </tableData>
+                    </table>
+            </function>
+        </fcs_function>
+
+        <fcs_function name="fbw/slat/partially-extended-max-mn">
+            <function>
+                    <table>
+                        <independentVar lookup="row">position/h-sl-ft</independentVar>
+                        <tableData>
+                                0	0.5806
+                            28500	0.8654
+                            35000	0.8702
+                            40000	0.8765
+                        </tableData>
+                    </table>
+            </function>
+        </fcs_function>
+
+        <fcs_function name="fbw/slat/extension-aoa">
+            <function>
+                    <table>
+                        <independentVar lookup="row">velocities/mach</independentVar>
+                        <tableData>
+							0.000	10.45
+							0.395	10.45
+							0.396	 8.12
+							0.452	 7.91
+							0.499	 7.63
+							0.558	 7.15
+							0.604	 6.69
+							0.654	 6.08
+							0.703	 5.65
+							0.759	 5.44
+							0.806	 5.48
+							0.856	 5.49
+                        </tableData>
+                    </table>
+            </function>
+        </fcs_function>
+
+        <fcs_function name="fbw/slat/retraction-aoa">
+            <function>
+                    <table>
+                        <independentVar lookup="row">velocities/mach</independentVar>
+                        <tableData>
+							0.00	7.6
+							0.38	7.6
+							0.40	5.3
+							0.45	5.1
+							0.50	4.8
+							0.55	4.3
+							0.61	3.7
+							0.66	3.1
+							0.71	2.7
+							0.76	2.5
+							0.81	2.4
+							0.87	2.7
+						</tableData>
+                    </table>
+            </function>
+        </fcs_function>
+
+
+        <fcs_function name="fbw/slat/extension-calc">
+            <function>
+                    <table>
+                        <independentVar lookup="row">aero/alpha-deg</independentVar>
+                        <independentVar lookup="column">velocities/mach</independentVar>
+                        <tableData>
+						    	0.000	0.500	0.600	0.700	0.800	0.900	1.000
+							0	0.000	0.000	0.000	0.000	0.000	0.000	0.000
+							5	0.000	0.000	0.000	0.000	0.000	0.000	0.000
+							6	0.070	0.070	0.070	0.070	0.070	0.000	0.000
+							20	0.286	0.286	0.186	0.186	0.186	0.000	0.000
+							35	0.286	0.286	0.186	0.186	0.186	0.000	0.000
+							40	0.286	0.286	0.186	0.186	0.186	0.000	0.000
+							45	0.286	0.286	0.186	0.186	0.186	0.000	0.000
+							50	0.286	0.286	0.186	0.186	0.186	0.000	0.000
+							55	0.286	0.286	0.186	0.186	0.186	0.000	0.000
+						</tableData>
+                    </table>
+            </function>
+        </fcs_function>
+
+        <fcs_function name="systems/cadc/autoslat-extension-calc">
+            <function>
+                    <table>
+                        <independentVar lookup="row">aero/alpha-deg</independentVar>
+                        <independentVar lookup="column">velocities/mach</independentVar>
+                        <tableData>
+         							0	0.45	  0.5	  0.8	  0.9	   1
+							0	0.000	0.000	0.000	0.000	0.000	0.000
+							8	0.000	0.000	0.178	0.178	0.000	0.000
+							10	0.245	0.245	0.315	0.315	0.000	0.000
+							20	1.000	1.000	1.000	1.000	0.000	0.000
+							25	1.000	1.000	1.000	1.000	0.000	0.000
+							55	1.000	1.000	1.000	1.000	0.000	0.000
+						</tableData>
+                    </table>
+            </function>
+        </fcs_function>
+
 		<switch name="fbw/slat-output">
-			<default value="fbw/slat/function"/>
+			<default value="systems/cadc/autoslat-extension-calc"/>
 			<test logic="OR" value="/controls/flight/flaps">
-				gear/gear-pos-norm eq 1
-				fbw/man-slat eq 1
-				fbw/enable eq 0
+				gear/gear-pos-norm gt 0.7
+				fbw/man-slat gt 0
+				fbw/enable ne 1
+				/controls/flight/flaps gt 0
 			</test>
 		</switch>
-	
+
 	</channel>
 	
 	<channel name="Elevons">
