@@ -492,7 +492,7 @@
 				<table>
 					<independentVar lookup="row">fbw/pitch/alpha-lag</independentVar>
 					<tableData>
-						24  0.0
+						26  0.0
 						34  1.0
 					</tableData>
 				</table>
@@ -505,7 +505,7 @@
 					<independentVar lookup="row">fbw/pitch/alpha-lag</independentVar>
 					<tableData>
 						17 -1.00
-						20 -0.85
+						27 -0.85
 						29  0.00
 					</tableData>
 				</table>
