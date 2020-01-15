@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 
 <!--
         Description: Mirage 2000 Environmental Control System (Based on F-15)
@@ -394,10 +394,8 @@
                 <product>
                     <property>systems/ecs/windscreen-frost-dmd</property>
                     <sum>
-                        <sum>
-                            <property>systems/ecs/windscreen-temperature-k</property>
-                            <value>-273</value>
-                        </sum>
+                        <property>systems/ecs/windscreen-temperature-k</property>
+                        <value>-273</value>
                     </sum>
                     <value>-0.1</value>
                 </product>
