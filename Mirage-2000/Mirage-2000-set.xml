@@ -231,6 +231,19 @@
 	
 	<fdm n="0">
 		<jsbsim n="0">
+			<metrics>
+				<stores-centre-tank type="double">0</stores-centre-tank>
+				<stores-wing-tank-left type="double">0</stores-wing-tank-left>
+				<stores-wing-tank-right type="double">0</stores-wing-tank-right>
+			</metrics>
+
+            <!--
+			<aero>
+				<c>
+					<atuning-1 type="float">1.0</atuning-1>
+				</c>
+			</aero>
+		    -->
 			<systems>
 				<hydraulics>
 					<selected-system type="int">0</selected-system>
