@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-
 <PropertyList>
 	
 	<sim>
@@ -14,10 +13,10 @@
 		<aero>Mirage2000-vsp</aero>
 		
 		<rating>
-			<FDM     type="int"> 0 </FDM>
+			<FDM type="int"> 0 </FDM>
 			<systems type="int"> 4 </systems>
 			<cockpit type="int"> 3 </cockpit>
-			<model   type="int"> 4 </model>
+			<model type="int"> 4 </model>
 		</rating>
 		
 		<flaps> <!-- Used for manual slat control with FG flaps key -->
@@ -113,14 +112,11 @@
 		<view n="0">
 			<internal archive="y">true</internal>
 			<config>
-				<x-offset-m archive="y">0.000</x-offset-m>
-				<!-- Right -->
-				<y-offset-m archive="y">0.034</y-offset-m>
-				<!-- Up    47-->
-				<z-offset-m archive="y">-2.563</z-offset-m>
-				<!-- Back  -->
-				<pitch-offset-deg>-14</pitch-offset-deg>
-				<default-field-of-view-deg>83</default-field-of-view-deg>
+				<x-offset-m archive="y">0.000</x-offset-m><!-- Right -->
+				<y-offset-m archive="y">0.0890</y-offset-m><!-- Up    47-->
+				<z-offset-m archive="y">-2.563</z-offset-m><!-- Back  -->
+				<pitch-offset-deg>-16.39</pitch-offset-deg>
+				<default-field-of-view-deg>72.70</default-field-of-view-deg>
 			</config>
 		</view>
 		
@@ -258,7 +254,7 @@
 				<mode n="0">
 					<button n="3">
 						<binding n="0">
-							<script></script>
+							<script/>
 						</binding>
 						<binding n="1">
 							<condition>
@@ -273,7 +269,7 @@
 					</button>
 					<button n="4">
 						<binding n="0">
-							<script></script>
+							<script/>
 						</binding>
 						<binding n="1">
 							<condition>
@@ -296,7 +292,7 @@
 				<binding>
 					<command>nasal</command>
 					<script>
-						if (getprop("/fdm/jsbsim/fcs/airbrake-upper-cmd") > 0) {
+						if (getprop("/fdm/jsbsim/fcs/airbrake-upper-cmd") &gt; 0) {
 							setprop("/fdm/jsbsim/fcs/airbrake-upper-cmd", 0);
 							setprop("/fdm/jsbsim/fcs/airbrake-lower-cmd", 0);
 						} else {
